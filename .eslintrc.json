@@ -1,0 +1,37 @@
+{
+  "extends": ["next/core-web-vitals", "prettier"],
+  "parserOptions": {
+    "parser": "@babel/eslint-parser",
+    "requireConfigFile": false,
+    "babelOptions": {
+      "parserOpts": {
+        "plugins": ["jsx"]
+      }
+    }
+  },
+  "rules": {
+    "no-extra-semi": 2,
+    "semi": [1, "always"],
+    "quotes": [1, "single"],
+    "prefer-const": 2,
+    "no-var": 2,
+    "no-console": 0,
+    "no-const-assign": 2,
+    "no-useless-escape": 1,
+    "no-unused-vars": [
+      2,
+      {
+        "vars": "all",
+        "args": "after-used"
+      }
+    ],
+    "no-irregular-whitespace": 0,
+    "no-trailing-spaces": 1,
+    "no-undef": 2,
+    "curly": 0,
+    "space-before-function-paren": 0,
+    "import/no-mutable-exports": 1,
+    "new-cap": 1,
+    "camelcase": 0
+  }
+}
