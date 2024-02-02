@@ -11,6 +11,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Skeleton from '@mui/material/Skeleton';
 import styles from '@/app/tensorflowjs/tensorflow.module.css';
+import useIsomorphicLayoutEffect from '@/hooks/useIsomorphicLayoutEffect';
 
 export default function Tensorflow() {
   const imgRef = useRef(null);
@@ -20,7 +21,7 @@ export default function Tensorflow() {
   const [output, setOutput] = useState({});
   const [predictions, setPredictions] = useState([]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     async function imageClassifier() {
       const [_tensorflowJs, _mobilenet] = await window.Promise.all([
         import('@tensorflow/tfjs'),
