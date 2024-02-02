@@ -1,73 +1,85 @@
 'use client';
 
-// https://ithelp.ithome.com.tw/articles/10275577
-// https://learn.ml5js.org/#/tutorials/hello-ml5
-// https://p5js.org/zh-Hans/
+// https://www.tensorflow.org/js/models?hl=zh-tw
+// https://github.com/tensorflow/tfjs-models/tree/master/mobilenet
+// https://github.com/tensorflow/tfjs-models/tree/master/face-detection
+
+// https://js.tensorflow.org/api_node/4.16.0/
+// https://blog.csdn.net/qq_41880073/article/details/115600295
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import Skeleton from '@mui/material/Skeleton';
 import styles from '@/app/tensorflowjs/tensorflow.module.css';
 
 export default function Tensorflow() {
-  const divCanvasRef = useRef(null);
-  const [ml5Loading, setMl5Loading] = useState(true);
-  const [p5Js, setP5Js] = useState(null);
-  const [p5JsSketch, setP5JsSketch] = useState(null);
-
-  function p5Config(classifier, sketch) {
-    sketch.ml5ImageClassifier = classifier;
-    sketch.preload = function () {
-      sketch['images/cat.jpg'] = sketch.loadImage('images/bird.png');
-    };
-    sketch.setup = function () {
-      sketch.createCanvas(500, 500);
-      sketch.ml5ImageClassifier.classify(
-        sketch['images/cat.jpg'],
-        // A function to run when we get any errors and the results
-        function gotResult(error, results) {
-          // Display error in the console
-          if (error) {
-            console.error(error);
-          } else {
-            // The results are in an array ordered by confidence.
-            console.log(results);
-            sketch.createDiv(`Label: ${results[0].label}`);
-            // sketch.createDiv(`Confidence: ${nf(results[0].confidence, 0, 2)}`);
-          }
-          setMl5Loading(false);
-        }
-      );
-      sketch.image(sketch['images/cat.jpg'], 0, 0);
-    };
-    setP5JsSketch(sketch);
-  }
+  const imgRef = useRef(null);
+  const [tensorflowLoading, setTensorflowLoading] = useState(true);
+  const [tensorflowJs, setTensorflowJs] = useState(null);
+  const [tensorflowMobilenet, setTensorflowMobilenet] = useState(null);
+  const [output, setOutput] = useState({});
+  const [predictions, setPredictions] = useState([]);
 
   useEffect(() => {
     async function imageClassifier() {
-      const [ml5, { default: P5 }] = await window.Promise.all([
-        import('ml5'),
-        import('p5')
+      const [_tensorflowJs, _mobilenet] = await window.Promise.all([
+        import('@tensorflow/tfjs'),
+        import('@tensorflow-models/mobilenet')
       ]);
-      const _classifier = await ml5.imageClassifier('MobileNet');
-      setP5Js(
-        new P5((...arg) => p5Config(_classifier, ...arg), divCanvasRef.current)
-      );
+      // Load the model.
+      const model = await _mobilenet.load();
+
+      // Classify the image.
+      const _predictions = await model.classify(imgRef.current);
+      console.log('Predictions: ');
+      console.log(_predictions);
+      setPredictions(_predictions);
+
+      let _output = null;
+      _predictions.forEach((prediction) => {
+        if (
+          _output === null ||
+          _predictions?.probability <= prediction.probability
+        ) {
+          _output = prediction;
+        }
+      });
+      setOutput(_output);
+
+      setTensorflowJs(_tensorflowJs);
+      setTensorflowMobilenet(_mobilenet);
+      setTensorflowLoading(false);
     }
     if (typeof window !== 'undefined') {
       imageClassifier();
     }
   }, []);
   useEffect(() => {
-    console.log({ p5Js, p5JsSketch });
-  }, [p5Js, p5JsSketch]);
+    console.log({ tensorflowJs, tensorflowMobilenet });
+  }, [tensorflowJs, tensorflowMobilenet]);
 
   return (
     <main className={styles.main}>
-      <div ref={divCanvasRef}>
-        {ml5Loading === true && (
-          <Skeleton variant="rounded" width={1000} height={1000} />
-        )}
-      </div>
+      <Image
+        ref={imgRef}
+        src="/images/bird.png"
+        alt="bird"
+        width={600}
+        height={500}
+      />
+      {tensorflowLoading === true ? (
+        <Skeleton variant="rounded" width={600} height={106} />
+      ) : (
+        <div>
+          <p>Predictions: </p>
+          {predictions.map((prediction, key) => (
+            <p
+              key={key}
+            >{`相似於：${prediction.className}，相似度：${prediction.probability}`}</p>
+          ))}
+          <p>相似度最高：{output?.className}</p>
+        </div>
+      )}
     </main>
   );
 }

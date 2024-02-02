@@ -2245,6 +2245,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tensorflow-models/mobilenet@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@tensorflow-models/mobilenet@npm:2.1.1"
+  peerDependencies:
+    "@tensorflow/tfjs-converter": ^4.9.0
+    "@tensorflow/tfjs-core": ^4.9.0
+  checksum: 0a69a59d773bbd618beec7c424ae9bf7980be12533d4a8aec48ba2b8fe4fdb19421d771747ce2567b5aa784101edbd72c8fb09bb2cd314e8e6e336272525ab34
+  languageName: node
+  linkType: hard
+
 "@tensorflow-models/posenet@npm:^2.2.1":
   version: 2.2.2
   resolution: "@tensorflow-models/posenet@npm:2.2.2"
@@ -2408,6 +2418,20 @@ __metadata:
     "@tensorflow/tfjs-core": 4.16.0
     seedrandom: ^3.0.5
   checksum: 979b4a2c546d860a38548d61aaddf7235e33131ae2fa6ac25d6ba2b556d8842255ea65fba69d4c163edc940100bbe3b3f8c472886cdea9ba1bd3bf58bfb697c0
+  languageName: node
+  linkType: hard
+
+"@tensorflow/tfjs-data@npm:^4.17.0":
+  version: 4.17.0
+  resolution: "@tensorflow/tfjs-data@npm:4.17.0"
+  dependencies:
+    "@types/node-fetch": "npm:^2.1.2"
+    node-fetch: "npm:~2.6.1"
+    string_decoder: "npm:^1.3.0"
+  peerDependencies:
+    "@tensorflow/tfjs-core": 4.17.0
+    seedrandom: ^3.0.5
+  checksum: 298e390b88ceee0b2983b09eed488857aabcf58d91a2ee5170d44dbd6bfd21a5d50359ff74581c5e77bd748ea350ce4607572f342f43f75717cdc9ec8907c433
   languageName: node
   linkType: hard
 
@@ -2803,12 +2827,14 @@ __metadata:
     "@fontsource/roboto": "npm:^5.0.8"
     "@mui/material": "npm:^5.15.6"
     "@mui/material-nextjs": "npm:^5.15.6"
+    "@tensorflow-models/mobilenet": "npm:^2.1.1"
     "@tensorflow/tfjs": "npm:^4.16.0"
     "@tensorflow/tfjs-backend-wasm": "npm:^4.16.0"
     "@tensorflow/tfjs-backend-webgl": "npm:^4.16.0"
     "@tensorflow/tfjs-backend-webgpu": "npm:^4.16.0"
     "@tensorflow/tfjs-converter": "npm:^4.16.0"
     "@tensorflow/tfjs-core": "npm:^4.16.0"
+    "@tensorflow/tfjs-data": "npm:^4.17.0"
     babel-plugin-module-extension-resolver: "npm:^1.0.0"
     brain.js: "npm:^2.0.0-beta.23"
     eslint: "npm:^8.56.0"
@@ -2823,6 +2849,7 @@ __metadata:
     prettier: "npm:^3.2.4"
     react: "npm:^18"
     react-dom: "npm:^18"
+    seedrandom: "npm:^3.0.5"
   languageName: unknown
   linkType: soft
 
