@@ -1,9 +1,10 @@
 {
-  "name": "ai_test",
+  "name": "parker-ai-lab",
   "packageManager": "yarn@4.0.2",
   "scripts": {
     "brain_test": "babel-node ./ai_srcipt/brain_test.mjs",
-    "dev": "next dev",
+    "dev": "next dev -H 0.0.0.0 -p 3001",
+    "dev-https": "next dev --experimental-https -H 0.0.0.0 -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -24,6 +25,7 @@
     "@tensorflow/tfjs-core": "^4.16.0",
     "@tensorflow/tfjs-data": "^4.17.0",
     "brain.js": "^2.0.0-beta.23",
+    "cross-env": "^7.0.3",
     "gpu.js": "^2.16.0",
     "ml5": "^0.12.2",
     "next": "14.0.4",
