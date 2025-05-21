@@ -9,11 +9,15 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Skeleton from '@mui/material/Skeleton';
+import useIsomorphicLayoutEffect from '@/hooks/useIsomorphicLayoutEffect';
+
 import styles from '@/app/ml5/ml5.module.css';
 
 export default function Ml5() {
   const divCanvasRef = useRef(null);
   const [ml5Loading, setMl5Loading] = useState(true);
+  const [ml5, setMl5] = useState(null);
+  const [tensorflowJs, setTensorflowJs] = useState(null);
   const [p5Js, setP5Js] = useState(null);
   const [p5JsSketch, setP5JsSketch] = useState(null);
 
@@ -45,13 +49,16 @@ export default function Ml5() {
     setP5JsSketch(sketch);
   }
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     async function imageClassifier() {
-      const [ml5, { default: P5 }] = await window.Promise.all([
+      const [_ml5, { default: P5 }, _tensorflowJs] = await window.Promise.all([
         import('ml5'),
-        import('p5')
+        import('p5'),
+        import('@tensorflow/tfjs')
       ]);
-      const _classifier = await ml5.imageClassifier('MobileNet');
+      const _classifier = await _ml5.imageClassifier('MobileNet');
+      setMl5(_ml5);
+      setTensorflowJs(_tensorflowJs);
       setP5Js(
         new P5((...arg) => p5Config(_classifier, ...arg), divCanvasRef.current)
       );
@@ -61,8 +68,21 @@ export default function Ml5() {
     }
   }, []);
   useEffect(() => {
-    console.log({ p5Js, p5JsSketch });
-  }, [p5Js, p5JsSketch]);
+    console.log({ p5Js, p5JsSketch, ml5, tensorflowJs });
+    return () => {
+      // 在組件卸載時，可以嘗試清理 TensorFlow.js 內部狀態
+      // 🚨 謹慎使用這些方法，可能影響其他組件或模塊
+      if (tensorflowJs?.engine?.()?.memory?.()?.numTensors > 0) {
+        console.log('Disposing TensorFlow.js tensors...');
+        tensorflowJs?.disposeVariables(); // 清理所有訓練中的變量
+        tensorflowJs?.dispose();
+        // tensorflowJs?.engine?.()?.endScope?.(); // 清理所有未釋放的張量
+        // 確保任何懸掛的 WebGL context 也被處理
+        // tensorflowJs.setBackend('cpu'); // 或者切換到 CPU 後端作為一個重置手段
+      }
+      console.log('ml5.js related resources cleanup attempted.');
+    }
+  }, [p5Js, p5JsSketch, ml5, tensorflowJs]);
 
   return (
     <main className={styles.main}>

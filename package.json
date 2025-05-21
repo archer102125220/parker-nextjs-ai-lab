@@ -1,9 +1,6 @@
 {
   "name": "parker-ai-lab",
   "packageManager": "yarn@4.0.2",
-  "engines": {
-    "npm": "< 19.0.0"
-  },
   "scripts": {
     "brain_test": "babel-node ./ai_srcipt/brain_test.mjs",
     "dev": "next dev -H 0.0.0.0 -p 3001",

@@ -18,6 +18,7 @@ export default function Tensorflow() {
   const [tensorflowLoading, setTensorflowLoading] = useState(true);
   const [tensorflowJs, setTensorflowJs] = useState(null);
   const [tensorflowMobilenet, setTensorflowMobilenet] = useState(null);
+  const [tensorflowModel, setTensorflowModel] = useState(null);
   const [output, setOutput] = useState({});
   const [predictions, setPredictions] = useState([]);
 
@@ -50,14 +51,22 @@ export default function Tensorflow() {
       setTensorflowJs(_tensorflowJs);
       setTensorflowMobilenet(_mobilenet);
       setTensorflowLoading(false);
+      setTensorflowModel(model);
     }
     if (typeof window !== 'undefined') {
       imageClassifier();
     }
+
   }, []);
   useEffect(() => {
-    console.log({ tensorflowJs, tensorflowMobilenet });
-  }, [tensorflowJs, tensorflowMobilenet]);
+    console.log({ tensorflowJs, tensorflowModel, tensorflowMobilenet });
+    return () => {
+      tensorflowModel?.model?.dispose();
+      // tensorflowJs?.engine?.()?.endScope?.(); // 清理所有未釋放的張量
+      tensorflowJs?.dispose();
+      tensorflowJs?.disposeVariables(); // 清理所有訓練中的變量
+    }
+  }, [tensorflowJs, tensorflowMobilenet, tensorflowModel]);
 
   return (
     <main className={styles.main}>

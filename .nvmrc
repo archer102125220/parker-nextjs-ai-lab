@@ -1,1 +1,7 @@
-18.17.1
+#!/bin/bash
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  echo "18.19.1"  # macOS specific version
+else
+  echo ">=16.0.0"  # Other OS versions
+fi
