@@ -10,8 +10,10 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Skeleton from '@mui/material/Skeleton';
-import styles from '@/app/tensorflowjs/tensorflow.module.css';
+
 import useIsomorphicLayoutEffect from '@/hooks/useIsomorphicLayoutEffect';
+
+import styles from '@/app/tensorflowjs/tensorflow.module.css';
 
 export default function Tensorflow() {
   const imgRef = useRef(null);
@@ -57,15 +59,17 @@ export default function Tensorflow() {
       imageClassifier();
     }
 
-  }, []);
-  useEffect(() => {
-    console.log({ tensorflowJs, tensorflowModel, tensorflowMobilenet });
     return () => {
-      tensorflowModel?.model?.dispose();
+      console.log({ tensorflowModel, ['tensorflowModel?.model']: tensorflowModel?.model, ['tensorflowModel?.model?.dispose']: tensorflowModel?.model?.dispose });
+      tensorflowModel?.model?.dispose(); // 清理模型
+      // tensorflowModel?.dispose(); // 清理模型
       // tensorflowJs?.engine?.()?.endScope?.(); // 清理所有未釋放的張量
       tensorflowJs?.dispose();
       tensorflowJs?.disposeVariables(); // 清理所有訓練中的變量
-    }
+    };
+  }, []);
+  useEffect(() => {
+    console.log({ tensorflowJs, tensorflowModel, tensorflowMobilenet });
   }, [tensorflowJs, tensorflowMobilenet, tensorflowModel]);
 
   return (
