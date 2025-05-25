@@ -1,5 +1,5 @@
 {
-  "name": "parker-ai-lab",
+  "name": "parker-nestjs-ai-lab",
   "packageManager": "yarn@4.0.2",
   "scripts": {
     "brain_test": "babel-node ./ai_srcipt/brain_test.mjs",
