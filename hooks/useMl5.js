@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 
 import useIsomorphicLayoutEffect from '@/hooks/useIsomorphicLayoutEffect';
 
-export default function useMl5({ elementRef, getElementRef, onBeforeInit, onAfterInit, onBeforeSetup, onAfterSetup, gotResult: propsGotResult }) {
+export default function useMl5({ elementRef, getElementRef, onBeforeInit, getClassifier, onAfterInit, onBeforeSetup, setup, onAfterSetup }) {
   const [ml5Loading, setMl5Loading] = useState(true);
   const [ml5, setMl5] = useState(null);
   const [p5Js, setP5Js] = useState(null);
@@ -28,32 +28,7 @@ export default function useMl5({ elementRef, getElementRef, onBeforeInit, onAfte
         await onBeforeSetup(sketch);
       }
 
-      console.log('sketch.setup');
-      sketch['images/cat.jpg'] = await sketch.loadImage('images/bird.png');
-      sketch.createCanvas(1000, 500);
-
-      sketch.ml5ImageClassifier.classify(
-        sketch['images/cat.jpg'],
-        // A function to run when we get any errors and the results
-        async function gotResult(results, ...arg) {
-          console.log('gotResult');
-          if (typeof propsGotResult === 'function') {
-            await propsGotResult(results, sketch, ...arg);
-          } else {
-            // Display error in the console
-            if (results) {
-              // The results are in an array ordered by confidence.
-              console.log(results);
-              sketch.createDiv(`Label: ${results[0].label}`);
-              // sketch.createDiv(`Confidence: ${nf(results[0].confidence, 0, 2)}`);
-            } else {
-              console.error('ml5 error');
-            }
-          }
-          setMl5Loading(false);
-        }
-      );
-      sketch.image(sketch['images/cat.jpg'], 0, 0);
+      await setup(sketch, () => setMl5Loading(false));
 
       if (typeof onAfterSetup === 'function') {
         await onAfterSetup(sketch);
@@ -78,7 +53,7 @@ export default function useMl5({ elementRef, getElementRef, onBeforeInit, onAfte
         await onBeforeInit(_ml5, P5);
       }
 
-      const _classifier = await _ml5.imageClassifier('MobileNet');
+      const _classifier = await getClassifier(_ml5, P5);
       // P5.prototype.isPreloadSupported = function () {
       //   return true;
       // };
