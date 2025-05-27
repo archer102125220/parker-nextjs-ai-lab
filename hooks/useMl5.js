@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 
 import useIsomorphicLayoutEffect from '@/hooks/useIsomorphicLayoutEffect';
 
-export default function useMl5({ elementRef, getElementRef, onBeforeInit, getClassifier, onAfterInit, onBeforeSetup, setup, onAfterSetup }) {
+export default function useMl5({ elementRef, getElementRef, getClassifier, onAfterInit, setup }) {
   const [ml5Loading, setMl5Loading] = useState(true);
   const [ml5, setMl5] = useState(null);
   const [p5Js, setP5Js] = useState(null);
@@ -24,15 +24,7 @@ export default function useMl5({ elementRef, getElementRef, onBeforeInit, getCla
     //   sketch['images/cat.jpg'] = sketch.loadImage('images/bird.png');
     // };
     sketch.setup = async function () {
-      if (typeof onBeforeSetup === 'function') {
-        await onBeforeSetup(sketch);
-      }
-
       await setup(sketch, () => setMl5Loading(false));
-
-      if (typeof onAfterSetup === 'function') {
-        await onAfterSetup(sketch);
-      }
     };
     // sketch.draw = function () {
     //   console.log('sketch.draw');
@@ -48,10 +40,6 @@ export default function useMl5({ elementRef, getElementRef, onBeforeInit, getCla
       ]);
       console.log({ _p5Model });
       const P5 = _p5Model.default;
-
-      if (typeof onBeforeInit === 'function') {
-        await onBeforeInit(_ml5, P5);
-      }
 
       const _classifier = await getClassifier(_ml5, P5);
       // P5.prototype.isPreloadSupported = function () {
@@ -72,6 +60,7 @@ export default function useMl5({ elementRef, getElementRef, onBeforeInit, getCla
     }
 
   }, []);
+
   useEffect(() => {
 
     console.log({ p5Js, p5JsSketch, ml5 });
