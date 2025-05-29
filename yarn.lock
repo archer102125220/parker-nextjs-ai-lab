@@ -7282,9 +7282,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parker-nestjs-ai-lab@workspace:.":
+"parker-nextjs-ai-lab@workspace:.":
   version: 0.0.0-use.local
-  resolution: "parker-nestjs-ai-lab@workspace:."
+  resolution: "parker-nextjs-ai-lab@workspace:."
   dependencies:
     "@babel/core": "npm:^7.23.7"
     "@babel/eslint-parser": "npm:^7.23.3"
