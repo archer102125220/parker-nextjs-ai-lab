@@ -6,6 +6,9 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { Inter } from 'next/font/google';
 import './globals.css';
 
+import { AxiosInit } from '@/components/AxiosInit';
+
+// eslint-disable-next-line new-cap
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
@@ -24,6 +27,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="zh-tw">
       <body className={inter.className}>
+        <AxiosInit />
         {/* {children} */}
         <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
       </body>

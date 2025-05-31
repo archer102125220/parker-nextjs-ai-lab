@@ -10,9 +10,9 @@ import styles from '@/app/ml5/ml5.module.css';
 
 export default function Ml5() {
   const divCanvasRef = useRef(null);
-  // const [ml5Loading, setMl5Loading] = useState(true);
   const [resultList, setResultList] = useState(null);
-  const translatorEn = useTranslatorEn();
+  const [translatedLabel, setTranslatedLabel] = useState([]);
+  const { translate } = useTranslatorEn();
   const { ml5Loading } = useMl5({ getElementRef: () => divCanvasRef.current, getClassifier, setup });
 
   async function getClassifier(ml5) {
@@ -41,15 +41,26 @@ export default function Ml5() {
 
     P5.image(P5['images/cat.jpg'], 0, 0);
   }
-  useEffect(() => {
-    console.log({ translatorEn, resultList });
-    // async function handleTranslation() {
-    //   if (translatorEn === null || resultList === null) return;
-    //   // console.log(translatorEn(resultList));
-    // }
 
-    // handleTranslation();
-  }, [resultList, translatorEn]);
+  useEffect(() => {
+    async function handleTranslation() {
+      if (!resultList) return;
+
+      try {
+        const _translatedLabel = await translate({
+          text: resultList[0].label,
+          srcLang: 'eng_Latn',
+          tgtLang: 'zho_Hant'
+        });
+        setTranslatedLabel(_translatedLabel);
+      } catch (error) {
+        console.error('Translation error:', error);
+      }
+    }
+
+    handleTranslation();
+  }, [resultList]);
+
   return (
     <main className={styles.main}>
       <div ref={divCanvasRef}>
@@ -57,6 +68,12 @@ export default function Ml5() {
           <Skeleton variant="rounded" width={1000} height={1000} />
         )}
       </div>
+      {translatedLabel.length > 0 && (
+        <div className={styles.results}>
+          <h2>Classification Results:</h2>
+          <p>{translatedLabel}</p>
+        </div>
+      )}
     </main>
   );
 }

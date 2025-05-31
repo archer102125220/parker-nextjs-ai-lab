@@ -1,45 +1,39 @@
-'use client';
+import { useState } from 'react';
+import { request } from '@/utils/request';
 
-import { useState, useEffect } from 'react';
-import { pipeline } from '@huggingface/transformers';
+export const useTranslatorEn = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  async function translate({
+    text,
+    srcLang = 'eng_Latn',
+    tgtLang = 'zho_Hant'
+  }) {
+    try {
+      setIsLoading(true);
+      setError(null);
 
-export function useTranslatorEn({ model = '', loading, loaded } = {}) {
-  const [translatorEn, setTranslator] = useState(null);
+      const response = await request.get('/api/translator', {
+        msg: text,
+        src_lang: srcLang,
+        tgt_lang: tgtLang
+      });
 
-  useEffect(() => {
-    async function loadTranslator() {
-      try {
-
-        console.log('Loading translation model...');
-
-        if (typeof loading === 'function') {
-          loading();
-        }
-        // 選擇一個英翻中的模型
-        // 例如：'Helsinki-NLP/opus-mt-en-zh' 是 Helsinki-NLP 系列的一個常用模型
-        // 'facebook/nllb-200-distilled-600M'
-        const _translator = await pipeline('translation', model || 'Xenova/nllb-200-distilled-600M', { device: 'webgpu' });
-        console.log({ _translator });
-        setTranslator(_translator);
-
-        if (typeof loaded === 'function') {
-          loaded();
-        }
-
-        console.log('Translation model loaded.');
-      } catch (error) {
-        console.error(error);
-      }
+      return response.label;
+    } catch (err) {
+      setError(err);
+      throw err;
+    } finally {
+      setIsLoading(false);
     }
+  }
 
-    loadTranslator();
-
-  }, []);
-
-
-  return translatorEn;
-}
-
+  return {
+    translate,
+    isLoading,
+    error
+  };
+};
 
 export default useTranslatorEn;
