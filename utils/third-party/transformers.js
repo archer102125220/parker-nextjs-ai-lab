@@ -22,12 +22,16 @@ export class TranslatorConstructor {
   constructor(pipeline) {
     this.pipeline = pipeline;
   }
-  translator = null
+  translator = null;
   loadTransformers = async (model) => {
     console.log('Loading translation model...');
 
 
-    this.translator = await this.pipeline('translation', model || 'Xenova/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
+    // 選擇一個英翻中的模型
+    // 例如：'Helsinki-NLP/opus-mt-en-zh' 是 Helsinki-NLP 系列的一個常用模型
+    // 'facebook/nllb-200-distilled-600M'
+    // 'Xenova/nllb-200-distilled-600M'
+    this.translator = await this.pipeline('translation', model || 'facebook/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
 
     console.log('Translation model loaded.');
 
