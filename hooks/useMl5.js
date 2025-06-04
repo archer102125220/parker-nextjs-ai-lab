@@ -11,78 +11,43 @@ import { useState, useEffect } from 'react';
 
 import useIsomorphicLayoutEffect from '@/hooks/useIsomorphicLayoutEffect';
 
-export default function useMl5({ elementRef, getElementRef, getClassifier, onAfterInit, setup }) {
+export default function useMl5({ getClassifier }) {
   const [ml5Loading, setMl5Loading] = useState(true);
   const [ml5, setMl5] = useState(null);
-  const [p5Js, setP5Js] = useState(null);
-  const [p5JsSketch, setP5JsSketch] = useState(null);
-
-  function p5Config(_classifier, sketch) {
-    sketch.ml5ImageClassifier = _classifier;
-    // sketch.preload = function () {
-    //   console.log('sketch.preload');
-    //   sketch['images/cat.jpg'] = sketch.loadImage('images/bird.png');
-    // };
-    sketch.setup = async function () {
-      await setup(sketch, () => setMl5Loading(false));
-    };
-    // sketch.draw = function () {
-    //   console.log('sketch.draw');
-    // };
-    setP5JsSketch(sketch);
-  }
+  const [ml5Classifier, setMl5Classifier] = useState(null);
 
   useIsomorphicLayoutEffect(() => {
-    async function p5Init() {
-      const [_ml5, _p5Model] = await window.Promise.all([
-        import('ml5'),
-        import('p5')
-      ]);
-      console.log({ _p5Model });
-      const P5 = _p5Model.default;
+    setMl5Loading(true);
+    async function ml5Init() {
+      const _ml5 = await import('ml5');
 
-      const _classifier = await getClassifier(_ml5, P5);
-      // P5.prototype.isPreloadSupported = function () {
-      //   return true;
-      // };
+      const _classifier = await getClassifier(_ml5);
       setMl5(_ml5);
-      const element = typeof getElementRef === 'function' ? getElementRef() : elementRef;
-      const _P5 = new P5((...arg) => p5Config(_classifier, ...arg), element);
-      setP5Js(_P5);
-
-      if (typeof onAfterInit === 'function') {
-        await onAfterInit(_ml5, P5, _classifier, _P5);
-      }
+      setMl5Classifier(_classifier);
+      setMl5Loading(false);
     }
 
     if (typeof window !== 'undefined') {
-      p5Init();
+      ml5Init();
     }
 
   }, []);
 
   useEffect(() => {
 
-    console.log({ p5Js, p5JsSketch, ml5 });
+    console.log({ ml5 });
     return () => {
-      if (typeof p5Js?.remove === 'function') {
-        p5Js.remove(); // 清除 P5.js 的畫布和相關資源
-      }
-      if (typeof p5JsSketch?.dispose === 'function') {
-        p5JsSketch.dispose(); // 清除 P5.js 的畫布和相關資源
-      }
-      if (typeof p5JsSketch?.classifier?.dispose === 'function') {
-        p5JsSketch.classifier.dispose(); // 清除 P5.js 的畫布和相關資源
+      if (typeof ml5?.dispose === 'function') {
+        ml5.dispose(); // 清除 ml5.js 的畫布和相關資源
       }
       console.log('ml5.js related resources cleanup attempted.');
     };
-  }, [p5Js, p5JsSketch, ml5]);
+  }, [ml5]);
 
 
   return {
     ml5Loading,
     ml5,
-    p5Js,
-    p5JsSketch,
+    ml5Classifier,
   };
 }

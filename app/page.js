@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <Button variant="contained">
-        <Link href="/ml5">ml5</Link>
+        <Link href="/p5ml5">p5 + ml5</Link>
       </Button>
       <Button variant="contained">
         <Link href="/tensorflowjs">TensorflowJS</Link>
