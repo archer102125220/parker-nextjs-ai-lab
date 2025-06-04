@@ -1,4 +1,4 @@
-import { pipeline } from '@huggingface/transformers';
+import { pipeline, InferenceClient } from '@huggingface/transformers';
 
 /*
 const DEVICE_TYPES = Object.freeze({
@@ -18,10 +18,13 @@ const DEVICE_TYPES = Object.freeze({
 */
 
 export class TranslatorConstructor {
-  constructor(pipeline) {
+  constructor(pipeline, InferenceClient) {
     this.pipeline = pipeline;
+    this.InferenceClient = InferenceClient;
   }
   translator = null;
+  inferenceClient = null;
+
   loadTransformers = async (model) => {
     console.log('Loading translation model...');
 
@@ -39,7 +42,21 @@ export class TranslatorConstructor {
 
     return this.translator;
   };
+
+  initInferenceClient = async (token) => {
+    this.inferenceClient = new this.InferenceClient(token || process.env.HUGGINGFACE_TOKEN);
+    return this.inferenceClient;
+  };
+
   handleTranslate = async (msg, srcLang, tgtLang) => {
+
+    // if (this.translator !== null) {
+    //   return await this.translator(msg, { src_lang: srcLang, tgt_lang: tgtLang });
+    // } else if (this.inferenceClient !== null) {
+    //   return await this.inferenceClient.translate(msg, { src_lang: srcLang, tgt_lang: tgtLang });
+    // }
+
+
     let translator = this.translator;
 
     if (translator === null) {
@@ -51,6 +68,6 @@ export class TranslatorConstructor {
 }
 
 
-export const Translator = new TranslatorConstructor(pipeline);
+export const Translator = new TranslatorConstructor(pipeline, InferenceClient);
 
 export default Translator;
