@@ -1,4 +1,7 @@
-import { pipeline, InferenceClient } from '@huggingface/transformers';
+import { pipeline } from '@huggingface/transformers';
+import { InferenceClient } from '@huggingface/inference';
+
+// https://huggingface.co/Helsinki-NLP/opus-mt-en-zh?text=My+name+is+Wolfgang+and+I+live+in+Berlin
 
 /*
 const DEVICE_TYPES = Object.freeze({
@@ -22,52 +25,85 @@ export class TranslatorConstructor {
     this.pipeline = pipeline;
     this.InferenceClient = InferenceClient;
   }
-  translator = null;
-  inferenceClient = null;
+  #token = '';
+  #modelName = '';
+  #translator = null;
+  #inferenceClient = null;
 
-  loadTransformers = async (model) => {
+  pipeline = null;
+  InferenceClient = null;
+  modelName = { get: () => this.#modelName };
+  translator = { get: () => this.#translator };
+  inferenceClient = { get: () => this.#inferenceClient };
+
+  /**
+   * 載入翻譯模型
+   * @param {string} model - 欲載入翻譯模型名稱，預設與 initInferenceClient 不同，預設為 Xenova/nllb-200-distilled-600M
+   * @returns {Translator} 翻譯函式
+   */
+  loadTransformers = async (model = '') => {
     console.log('Loading translation model...');
 
-
     // 選擇一個英翻中的模型
-    // 例如：'Helsinki-NLP/opus-mt-en-zh' 是 Helsinki-NLP 系列的一個常用模型
+    // 'Helsinki-NLP/opus-mt-en-zh' //（Helsinki-NLP 系列的一個常用模型）
     // 'facebook/nllb-200-distilled-600M'
     // 'Xenova/nllb-200-distilled-600M'
-    this.translator = await this.pipeline('translation', model || 'Helsinki-NLP/opus-mt-en-zh', { cache_dir: '.transformers-cache' });
-    // this.translator = await this.pipeline('translation', model || 'Xenova/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
-    // this.translator = await this.pipeline('translation', model || 'facebook/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
-
+    // this.#translator = await this.pipeline('translation', model || 'Helsinki-NLP/opus-mt-en-zh', { cache_dir: '.transformers-cache' });
+    this.#translator = await this.pipeline('translation', model || 'Xenova/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
+    // this.#translator = await this.pipeline('translation', model || 'facebook/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
 
     console.log('Translation model loaded.');
 
-    return this.translator;
+    return this.#translator;
   };
 
-  initInferenceClient = async (token) => {
-    this.inferenceClient = new this.InferenceClient(token || process.env.HUGGINGFACE_TOKEN);
-    return this.inferenceClient;
+  /**
+   * 初始化 transformers 翻譯用推理模型
+   * @param {string} token - 推理客戶端token
+   * @param {string} model - 模型名稱，預設與 loadTransformers 不同，預設為 Helsinki-NLP/opus-mt-en-zh，在 handleTranslate 時使用
+   * @returns {InferenceClient} 推理模型實例
+   */
+  initInferenceClient = async (token, model = 'Helsinki-NLP/opus-mt-en-zh') => {
+    console.log('init inferenceClient...');
+
+    this.#modelName = model;
+    this.#token = token || process.env.HUGGINGFACE_TOKEN;
+    this.#inferenceClient = new this.InferenceClient(this.#token);
+
+    console.log('InferenceClient inited.');
+
+    return this.#inferenceClient;
   };
 
-  handleTranslate = async (msg, srcLang, tgtLang) => {
+  handleTranslate = async (msg, options = { src_lang: 'eng_Latn', tgt_lang: 'zho_Hant' }) => {
+    if (this.#inferenceClient !== null) {
+      return await this.#inferenceClient.translation(
+        {
+          provider: 'hf-inference',
+          ...options,
+          inputs: msg,
+          model: this.#modelName || 'Helsinki-NLP/opus-mt-en-zh'
+        }
+      );
+    }
 
-    // if (this.translator !== null) {
-    //   return await this.translator(msg, { src_lang: srcLang, tgt_lang: tgtLang });
-    // } else if (this.inferenceClient !== null) {
-    //   return await this.inferenceClient.translate(msg, { src_lang: srcLang, tgt_lang: tgtLang });
-    // }
 
-
-    let translator = this.translator;
+    let translator = this.#translator;
 
     if (translator === null) {
       translator = await this.loadTransformers();
-      this.translator = translator;
+      this.#translator = translator;
     }
-    return translator(msg, { src_lang: srcLang, tgt_lang: tgtLang });
+    return translator(msg, options);
   };
 }
 
+let _Translator = global.Translator || null;
+if (!_Translator) {
+  _Translator = new TranslatorConstructor(pipeline, InferenceClient);
+  global.Translator = _Translator;
+}
 
-export const Translator = new TranslatorConstructor(pipeline, InferenceClient);
+export const Translator = _Translator;
 
 export default Translator;

@@ -4,5 +4,5 @@ export async function register() {
   // await Translator.loadTransformers('Helsinki-NLP/opus-mt-en-zh');
   // await Translator.loadTransformers('Xenova/nllb-200-distilled-600M');
   // await Translator.loadTransformers('facebook/nllb-200-distilled-600M');
-  await Translator.initInferenceClient(process.env.HUGGINGFACE_TOKEN);
+  await Translator.initInferenceClient(process.env.HUGGINGFACE_TOKEN, 'Helsinki-NLP/opus-mt-en-zh');
 }
