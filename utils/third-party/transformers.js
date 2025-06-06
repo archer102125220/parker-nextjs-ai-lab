@@ -2,6 +2,7 @@ import { pipeline } from '@huggingface/transformers';
 import { InferenceClient } from '@huggingface/inference';
 
 // https://huggingface.co/Helsinki-NLP/opus-mt-en-zh?text=My+name+is+Wolfgang+and+I+live+in+Berlin
+// https://huggingface.co/Xenova/opus-mt-en-zh
 
 /*
 const DEVICE_TYPES = Object.freeze({
@@ -22,16 +23,18 @@ const DEVICE_TYPES = Object.freeze({
 
 export class TranslatorConstructor {
   constructor(pipeline, InferenceClient) {
-    this.pipeline = pipeline;
-    this.InferenceClient = InferenceClient;
+    this.#pipeline = pipeline;
+    this.#InferenceClient = InferenceClient;
   }
+  #pipeline = null;
+  #InferenceClient = null;
   #token = '';
   #modelName = '';
   #translator = null;
   #inferenceClient = null;
 
-  pipeline = null;
-  InferenceClient = null;
+  pipeline = { get: () => this.#pipeline };
+  InferenceClient = { get: () => this.#InferenceClient };
   modelName = { get: () => this.#modelName };
   translator = { get: () => this.#translator };
   inferenceClient = { get: () => this.#inferenceClient };
@@ -46,11 +49,17 @@ export class TranslatorConstructor {
 
     // 選擇一個英翻中的模型
     // 'Helsinki-NLP/opus-mt-en-zh' //（Helsinki-NLP 系列的一個常用模型）
+    // 'Xenova/opus-mt-en-zh'
     // 'facebook/nllb-200-distilled-600M'
     // 'Xenova/nllb-200-distilled-600M'
-    // this.#translator = await this.pipeline('translation', model || 'Helsinki-NLP/opus-mt-en-zh', { cache_dir: '.transformers-cache' });
-    this.#translator = await this.pipeline('translation', model || 'Xenova/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
-    // this.#translator = await this.pipeline('translation', model || 'facebook/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
+    this.#translator = await this.#pipeline('translation', model || 'Xenova/opus-mt-en-zh', { cache_dir: '.transformers-cache' });
+    // this.#translator = await this.#pipeline('translation', model || 'Helsinki-NLP/opus-mt-en-zh', {
+    //   subfolder: '',
+    //   model_file_name: 'tf_model.h5',
+    //   cache_dir: '.transformers-cache'
+    // });
+    // this.#translator = await this.#pipeline('translation', model || 'Xenova/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
+    // this.#translator = await this.#pipeline('translation', model || 'facebook/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
 
     console.log('Translation model loaded.');
 
@@ -68,7 +77,7 @@ export class TranslatorConstructor {
 
     this.#modelName = model;
     this.#token = token || process.env.HUGGINGFACE_TOKEN;
-    this.#inferenceClient = new this.InferenceClient(this.#token);
+    this.#inferenceClient = new this.#InferenceClient(this.#token);
 
     console.log('InferenceClient inited.');
 

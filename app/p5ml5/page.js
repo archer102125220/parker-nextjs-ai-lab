@@ -13,7 +13,7 @@ export default function P5Ml5() {
   const [resultList, setResultList] = useState(null);
   const [translatedLabel, setTranslatedLabel] = useState([]);
   const { translate } = useTranslatorEn();
-  const { ml5Loading } = useP5Ml5({ getElementRef: () => divCanvasRef.current, getClassifier, setup });
+  const { p5Loading } = useP5Ml5({ getElementRef: () => divCanvasRef.current, getClassifier, setup });
 
   async function getClassifier(ml5) {
     const classifier = await ml5.imageClassifier('MobileNet');
@@ -22,11 +22,11 @@ export default function P5Ml5() {
 
   async function setup(P5, done) {
     console.log('sketch.setup');
-    P5.birdPngImg = await P5.loadImage('images/bird.png');
-    P5.createCanvas(1000, 500);
+    P5.birdImg = await P5.loadImage('images/bird.png');
+    P5.createCanvas(500, 250);
 
-    P5.ml5ImageClassifier.classify(
-      P5.birdPngImg,
+    P5.ml5Classifier.classify(
+      P5.birdImg,
       function (results) {
         if (results) {
           console.log({ results });
@@ -39,7 +39,7 @@ export default function P5Ml5() {
       }
     );
 
-    // P5.image(P5.birdPngImg, 0, 0);
+    P5.image(P5.birdImg, 0, 0, 500, 250);
   }
 
   useEffect(() => {
@@ -63,11 +63,12 @@ export default function P5Ml5() {
 
   return (
     <main className={styles.main}>
-      <div ref={divCanvasRef}>
-        {ml5Loading === true && (
-          <Skeleton variant="rounded" width={1000} height={1000} />
-        )}
-      </div>
+      {p5Loading === true && (
+        <Skeleton variant="rounded" width={500} height={250} />
+      )}
+
+      <div ref={divCanvasRef} style={{ display: p5Loading === true ? 'none' : '' }} />
+
       {translatedLabel.length > 0 && (
         <div className={styles.results}>
           <h2>Classification Results:</h2>
