@@ -1,0 +1,34 @@
+:root {
+  --__ripple_color__: rgba(0, 0, 0, 0.3);
+}
+
+.customize_ripple {
+  position: relative;
+  cursor: pointer;
+
+  &-block {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+
+    &-content {
+      position: absolute;
+      border-radius: 50%;
+      /* To make it round */
+      // background-color: rgba(0, 0, 0, 0.3);
+      background-color: var(--__ripple_color__);
+
+      width: 100px;
+      height: 100px;
+      margin-top: -50px;
+      /* for positioning */
+      margin-left: -50px;
+
+      animation: clickRipple 1s;
+      opacity: 0;
+    }
+  }
+}

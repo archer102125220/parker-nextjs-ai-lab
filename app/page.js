@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Button from '@mui/material/Button';
-import styles from '@/app/page.module.css';
+import styles from '@/app/page.module.scss';
 
 export default function Home() {
   return (

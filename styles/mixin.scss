@@ -1,0 +1,204 @@
+// @use 'flag-icons/sass/_flag-icons-base.scss' as *;
+
+@mixin mobile {
+  @media (max-width: 707px) {
+    @content;
+  }
+}
+
+@mixin tabletOnly {
+  @media (min-width: 708px) and (max-width: 1140px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: 1140px) {
+    @content;
+  }
+}
+
+@mixin CN-Regular-14 {
+  color: #1d2129;
+  font-family: 'Noto Sans';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 22px; /* 157.143% */
+}
+
+@mixin CN-Medium-14 {
+  color: #1d2129;
+  font-family: 'Noto Sans';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 22px; /* 157.143% */
+}
+
+@mixin CN-Medium-16 {
+  color: #1d2129;
+  font-family: 'Noto Sans';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px; /* 150% */
+}
+
+@mixin CN-Medium-20 {
+  color: #1d2129;
+  font-family: 'Noto Sans';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px; /* 140% */
+}
+
+@mixin button {
+  font-weight: 400;
+  padding: 0.375rem 0.75rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  font-family: inherit;
+  -webkit-appearance: button;
+  text-transform: none;
+  cursor: pointer;
+}
+
+@mixin textBox {
+  // display: block;
+  // width: 100%;
+  // height: calc(1.5em + 0.75rem + 2px);
+  // padding: 0.375rem 0.75rem;
+  // margin         : 0.375rem 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 10px;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+}
+
+@mixin button-style-dark_hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: $primary;
+  border-color: $primary;
+
+  &:disabled {
+    color: #00000080;
+    background-color: #aeaeae;
+    border-color: #aeaeae;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    color: #fff;
+    background-color: #6b498e;
+    border-color: #1937bb;
+    // sass.hk/skill/sass25.html
+    // background-color: mix(#7e56a7, #58446a);
+    // border-color: mix(#7e56a7, #58446a);
+  }
+
+  &:not(:disabled):active {
+    color: #fff;
+    background-color: #1937bb;
+    border-color: #142ea1;
+  }
+}
+
+@mixin button-style-light_hover {
+  display: inline-block;
+  font-weight: 400;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  -webkit-appearance: button;
+  text-transform: none;
+  margin: 0;
+  font-family: inherit;
+  cursor: pointer;
+  color: #fff;
+  background-color: $primary;
+  border-color: $primary;
+
+  &:disabled {
+    color: #00000080;
+    background-color: #aeaeae;
+    border-color: #aeaeae;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    color: #fff;
+    background-color: #6493fb;
+    border-color: #6493fb;
+    // background-color: mix(#7e56a7, #fff, 75%);
+    // border-color: mix(#7e56a7, #fff, 75%);
+  }
+
+  &:not(:disabled):active {
+    color: #fff;
+    background-color: #1937bb;
+    border-color: #142ea1;
+  }
+}
+
+@mixin button-outline-style {
+  color: $text-secondary;
+  background-color: $secondary;
+  border-color: $primary;
+  border-radius: 0.35rem;
+
+  &:disabled {
+    color: #00000080;
+    background-color: #aeaeae;
+    border-color: #aeaeae;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #cec5d8;
+  }
+
+  &:not(:disabled):active {
+    color: #fff;
+    background-color: #1937bb;
+    border-color: #142ea1;
+  }
+}
+
+@mixin customize-btn-close {
+  color: #fff;
+  background-color: #858796;
+  border-color: #858796;
+
+  &:hover {
+    color: #fff;
+    background-color: #717384;
+    border-color: #6b6d7d;
+  }
+}
+
+@mixin link-style {
+  color: #e7614c;
+  text-decoration: none;
+  background-color: transparent;
+  cursor: pointer;
+
+  &:-webkit-any-link {
+    color: -webkit-link;
+    cursor: pointer;
+  }
+
+  &:hover {
+    color: #224abe;
+    text-decoration: underline;
+  }
+}

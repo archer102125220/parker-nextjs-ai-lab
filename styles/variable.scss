@@ -1,0 +1,77 @@
+// https://element.eleme.io/?#/zh-CN/theme/preview
+
+// @use 'flag-icons/sass/_variables.scss' as *;
+
+// Brand Color
+$primary: #2c64e3;
+$secondary: #e8effd;
+
+// Functional Color
+$success: #67c23a;
+$warning: #e6a23c;
+$danger: #f56c6c;
+$info: #be9ff1;
+
+// Font Color
+$text-primary: #303133;
+$text-regular: #606266;
+$text-secondary: #2c64e3;
+$text-placeholder: #c0c4cc;
+
+// Border Color
+$border-color-base: #dcdfe6;
+$border-color-light: #e4e7ed;
+$border-color-lighter: #ebeef5;
+$border-color-extra-light: #f2f6fc;
+
+// Background Color
+$color-white: #ffffff;
+$color-black: #000000;
+$background-color-base: #f5f7fa;
+
+// Animation Color
+$card-animation-color: rgba(144, 142, 142, 0.71);
+$button-animation-color: rgba(144, 142, 142, 0.71);
+
+@mixin globalcssVariable {
+  /* Brand Color */
+  /* background-color: $primary; */
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+
+  /* Functional Color */
+  --success: #{$success};
+  --warning: #{$warning};
+  --danger: #{$warning};
+  --info: #{$info};
+
+  /* Font Color */
+  --text-primary: #{$text-primary};
+  --text-regular: #{$text-regular};
+  --text-secondary: #{$text-secondary};
+  --text-placeholder: #{$text-placeholder};
+
+  /* Border Color */
+  --border-color-base: #{$border-color-base};
+  --border-color-light: #{$border-color-light};
+  --border-color-lighter: #{$border-color-lighter};
+  --border-color-extra-light: #{$border-color-extra-light};
+
+  /* Background Color */
+  --color-white: #{$color-white};
+  --icolor-blacknfo: #{$color-black};
+  --background-color-base: #{$background-color-base};
+
+  /* Animation Color */
+  --card-animation-color: #{$card-animation-color};
+  --button-animation-color: #{$button-animation-color};
+
+  --safe-area-inset-top: constant(safe-area-inset-top);
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-right: constant(safe-area-inset-right);
+  --safe-area-inset-right: env(safe-area-inset-right);
+  --safe-area-inset-bottom: constant(safe-area-inset-bottom);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: constant(safe-area-inset-left);
+  --safe-area-inset-left: env(safe-area-inset-left);
+}

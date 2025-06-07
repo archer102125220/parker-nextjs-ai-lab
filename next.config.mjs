@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   serverExternalPackages: ['sharp', 'onnxruntime-node'],
+  sassOptions: {
+    additionalData:
+      '@use "@/styles/variable.scss" as *; @use "@/styles/mixin.scss" as *;'
+  },
 
   // https://github.com/huggingface/transformers.js/issues/210
   webpack: (config) => {
