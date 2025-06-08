@@ -32,19 +32,22 @@ export class TranslatorConstructor {
   #modelName = '';
   #translator = null;
   #inferenceClient = null;
+  #loading = false;
 
-  pipeline = { get: () => this.#pipeline };
-  InferenceClient = { get: () => this.#InferenceClient };
-  modelName = { get: () => this.#modelName };
-  translator = { get: () => this.#translator };
-  inferenceClient = { get: () => this.#inferenceClient };
-
+  get pipeline() { return this.#pipeline }
+  get InferenceClient() { return this.#InferenceClient }
+  get modelName() { return this.#modelName }
+  get translator() { return this.#translator }
+  get inferenceClient() { return this.#inferenceClient }
+  get loading() { return this.#loading }
   /**
    * 載入翻譯模型
    * @param {string} model - 欲載入翻譯模型名稱，預設與 initInferenceClient 不同，預設為 Xenova/nllb-200-distilled-600M
    * @returns {Translator} 翻譯函式
    */
   loadTransformers = async (model = '') => {
+    this.#loading = true;
+
     console.log('Loading translation model...');
 
     // 選擇一個英翻中的模型
@@ -62,6 +65,7 @@ export class TranslatorConstructor {
     // this.#translator = await this.#pipeline('translation', model || 'facebook/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
 
     console.log('Translation model loaded.');
+    this.#loading = false;
 
     return this.#translator;
   };
@@ -73,6 +77,8 @@ export class TranslatorConstructor {
    * @returns {InferenceClient} 推理模型實例
    */
   initInferenceClient = async (token, model = 'Helsinki-NLP/opus-mt-en-zh') => {
+    this.#loading = true;
+
     console.log('init inferenceClient...');
 
     this.#modelName = model;
@@ -80,13 +86,14 @@ export class TranslatorConstructor {
     this.#inferenceClient = new this.#InferenceClient(this.#token);
 
     console.log('InferenceClient inited.');
+    this.#loading = false;
 
     return this.#inferenceClient;
   };
 
   handleTranslate = async (msg, options = { src_lang: 'eng_Latn', tgt_lang: 'zho_Hant' }) => {
-    if (this.#inferenceClient !== null) {
-      return await this.#inferenceClient.translation(
+    if (this.inferenceClient !== null) {
+      return await this.inferenceClient.translation(
         {
           provider: 'hf-inference',
           ...options,

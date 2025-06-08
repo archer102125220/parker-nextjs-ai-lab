@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { request } from '@/utils/request';
 
-export const useTranslatorEn = () => {
+export function useTranslatorApi() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -34,6 +34,6 @@ export const useTranslatorEn = () => {
     isLoading,
     error
   };
-};
+}
 
-export default useTranslatorEn;
+export default useTranslatorApi;

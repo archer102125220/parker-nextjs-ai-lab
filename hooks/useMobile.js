@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 
-import { mediaMobile } from '@/styles/globals';
+import { mediaMobile } from '@/styles/mediaQuery';
 
 export function useMobile() {
   return useSyncExternalStore(
