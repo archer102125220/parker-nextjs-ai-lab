@@ -11,13 +11,13 @@ const config = {
   activation: 'sigmoid' // supported activation types: ['sigmoid', 'relu', 'leaky-relu', 'tanh']
 };
 
-const net = new brain.NeuralNetwork(config);
+const NeuralNetwork = new brain.NeuralNetwork(config);
 
-net.train([
+NeuralNetwork.train([
   { input: { r: 0.03, g: 0.7, b: 0.5 }, output: { black: 1 } },
   { input: { r: 0.16, g: 0.09, b: 0.2 }, output: { white: 1 } },
   { input: { r: 0.5, g: 0.5, b: 1.0 }, output: { white: 1 } }
 ]);
 
-const output = net.run({ r: 1, g: 0.4, b: 0 });
+const output = NeuralNetwork.run({ r: 1, g: 0.4, b: 0 });
 console.log(output);
