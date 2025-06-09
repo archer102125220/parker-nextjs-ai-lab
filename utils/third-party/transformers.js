@@ -32,22 +32,18 @@ export class TranslatorConstructor {
   #modelName = '';
   #translator = null;
   #inferenceClient = null;
-  #loading = false;
 
-  get pipeline() { return this.#pipeline }
-  get InferenceClient() { return this.#InferenceClient }
-  get modelName() { return this.#modelName }
-  get translator() { return this.#translator }
-  get inferenceClient() { return this.#inferenceClient }
-  get loading() { return this.#loading }
+  get pipeline() { return this.#pipeline; }
+  get InferenceClient() { return this.#InferenceClient; }
+  get modelName() { return this.#modelName; }
+  get translator() { return this.#translator; }
+  get inferenceClient() { return this.#inferenceClient; }
   /**
    * 載入翻譯模型
    * @param {string} model - 欲載入翻譯模型名稱，預設與 initInferenceClient 不同，預設為 Xenova/nllb-200-distilled-600M
    * @returns {Translator} 翻譯函式
    */
   loadTransformers = async (model = '') => {
-    this.#loading = true;
-
     console.log('Loading translation model...');
 
     // 選擇一個英翻中的模型
@@ -55,17 +51,16 @@ export class TranslatorConstructor {
     // 'Xenova/opus-mt-en-zh'
     // 'facebook/nllb-200-distilled-600M'
     // 'Xenova/nllb-200-distilled-600M'
-    this.#translator = await this.#pipeline('translation', model || 'Xenova/opus-mt-en-zh', { cache_dir: '.transformers-cache' });
-    // this.#translator = await this.#pipeline('translation', model || 'Helsinki-NLP/opus-mt-en-zh', {
+    this.#translator = await this.pipeline('translation', model || 'Xenova/opus-mt-en-zh', { cache_dir: '.transformers-cache' });
+    // this.#translator = await this.pipeline('translation', model || 'Helsinki-NLP/opus-mt-en-zh', {
     //   subfolder: '',
     //   model_file_name: 'tf_model.h5',
     //   cache_dir: '.transformers-cache'
     // });
-    // this.#translator = await this.#pipeline('translation', model || 'Xenova/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
-    // this.#translator = await this.#pipeline('translation', model || 'facebook/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
+    // this.#translator = await this.pipeline('translation', model || 'Xenova/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
+    // this.#translator = await this.pipeline('translation', model || 'facebook/nllb-200-distilled-600M', { cache_dir: '.transformers-cache' });
 
     console.log('Translation model loaded.');
-    this.#loading = false;
 
     return this.#translator;
   };
@@ -77,16 +72,13 @@ export class TranslatorConstructor {
    * @returns {InferenceClient} 推理模型實例
    */
   initInferenceClient = async (token, model = 'Helsinki-NLP/opus-mt-en-zh') => {
-    this.#loading = true;
-
     console.log('init inferenceClient...');
 
     this.#modelName = model;
     this.#token = token || process.env.HUGGINGFACE_TOKEN;
-    this.#inferenceClient = new this.#InferenceClient(this.#token);
+    this.#inferenceClient = new this.InferenceClient(this.#token);
 
     console.log('InferenceClient inited.');
-    this.#loading = false;
 
     return this.#inferenceClient;
   };
@@ -104,7 +96,7 @@ export class TranslatorConstructor {
     }
 
 
-    let translator = this.#translator;
+    let translator = this.translator;
 
     if (translator === null) {
       translator = await this.loadTransformers();
@@ -112,6 +104,10 @@ export class TranslatorConstructor {
     }
     return translator(msg, options);
   };
+
+  handleDispose() {
+    if (typeof this.pipeline?.dispose === 'function') this.pipeline.dispose();
+  }
 }
 
 let _Translator = global.Translator || null;

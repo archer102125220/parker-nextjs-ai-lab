@@ -49,8 +49,8 @@ export default function P5Ml5() {
   //     if (!resultList) return;
 
   //     try {
-  //       const _translatedLabel = await translate({
-  //         text: resultList[0].label,
+  //       const _translatedLabel = await translate(resultList[0].label,
+  //        {
   //         srcLang: 'eng_Latn',
   //         tgtLang: 'zho_Hant'
   //       });
