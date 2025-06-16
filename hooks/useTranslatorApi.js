@@ -1,36 +1,49 @@
-import { useState } from 'react';
-import { request } from '@/utils/request';
+import { useState, useEffect } from 'react';
+// import { request } from '@/utils/request';
 
-export function useTranslatorApi() {
+import { useRequest } from '@/hooks/useRequest';
+
+export function useTranslatorApi(msg = '', option = {}) {
+  const [translatedLabel, setTranslatedLabel] = useState('');
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  async function translate(msg = '', option = {}) {
-    const {
-      srcLang = 'eng_Latn',
-      tgtLang = 'zho_Hant'
-    } = option;
+  const request = useRequest();
 
-    try {
+  useEffect(function () {
+    async function translate() {
+      if (msg === '') return;
+
+      const {
+        srcLang = 'eng_Latn',
+        tgtLang = 'zho_Hant'
+      } = option;
+
       setIsLoading(true);
-      setError(null);
 
-      const response = await request.get('/api/translator', {
-        msg,
-        src_lang: srcLang,
-        tgt_lang: tgtLang
-      }, { useCache: true });
+      try {
+        setError(null);
 
-      return response.label;
-    } catch (_error) {
-      setError(_error);
-    } finally {
+        const response = await request.get('/api/translator', {
+          msg,
+          src_lang: srcLang,
+          tgt_lang: tgtLang
+        }, { useCache: true });
+
+        setTranslatedLabel(response.label);
+      } catch (_error) {
+        setError(_error);
+      }
+
       setIsLoading(false);
     }
-  }
+
+    translate();
+  }, [request, msg, option]);
 
   return {
-    translate,
+    translatedLabel,
     isLoading,
     error
   };
