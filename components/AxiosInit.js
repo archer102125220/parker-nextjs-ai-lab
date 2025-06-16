@@ -3,7 +3,8 @@
 import { useRequest } from '@/hooks/useRequest';
 
 export function AxiosInit({ children }) {
-  useRequest('/');
+  // useRequest('/');
+  useRequest(typeof window !== 'undefined' ? window.location.host : '/');
 
   return children;
 }
