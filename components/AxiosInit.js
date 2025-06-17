@@ -1,10 +1,10 @@
 'use client';
 
-import { useRequest } from '@/hooks/useRequest';
+import { useRequestInit } from '@/hooks/useRequest/useRequestInit';
 
 export function AxiosInit({ children }) {
-  // useRequest('/');
-  useRequest(typeof window !== 'undefined' ? window.location.host : '/');
+  // useRequestInit('/');
+  useRequestInit(typeof window !== 'undefined' ? window.location.host : '/');
 
   return children;
 }

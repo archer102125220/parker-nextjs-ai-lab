@@ -42,7 +42,7 @@ export class cancelRequest {
   handlerCancel = (method = 'GET', url, params) => {
     const key = this.getRequestKey(method, url, params);
     const requestCanceler = this.requestCancelerList[key] || {};
-    if (typeof requestCanceler === 'object' && requestCanceler !== null) {
+    if (typeof requestCanceler?.abort === 'function') {
       requestCanceler.abort();
       this.requestCancelerList[key] = null;
     }
@@ -52,7 +52,7 @@ export class cancelRequest {
     const requestCancelerList = this.requestCancelerList;
     Object.keys(requestCancelerList).forEach((requestCancelerKey) => {
       const requestCanceler = requestCancelerList[requestCancelerKey] || {};
-      if (typeof requestCanceler === 'object' && requestCanceler !== null) {
+      if (typeof requestCanceler?.abort === 'function') {
         requestCanceler.abort();
         this.requestCancelerList[requestCancelerKey] = null;
       }

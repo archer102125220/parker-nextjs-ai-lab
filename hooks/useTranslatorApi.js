@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 // import { request } from '@/utils/request';
 
-import { useRequest } from '@/hooks/useRequest';
+import { useRequestInit } from '@/hooks/useRequest/useRequestInit';
 
 export function useTranslatorApi(msg = '', option = {}) {
   const [translatedLabel, setTranslatedLabel] = useState('');
@@ -9,9 +9,9 @@ export function useTranslatorApi(msg = '', option = {}) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const request = useRequest();
+  const request = useRequestInit();
 
-  useEffect(function () {
+  useEffect(() => {
     async function translate() {
       if (msg === '') return;
 
