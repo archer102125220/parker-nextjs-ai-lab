@@ -9,10 +9,17 @@ export async function GET(request) {
   const tgtLang = searchParams.get('tgt_lang') || 'zho_Hant';
 
   try {
+    if (typeof msg !== 'string' || msg === '') {
+      return NextResponse.json({
+        label: '',
+        translatedOutput: null
+      });
+    }
+
     const translatedOutput = await Translator.handleTranslate(msg, srcLang, tgtLang);
 
     return NextResponse.json({
-      label: (translatedOutput?.[0] || translatedOutput)?.translation_text,
+      label: (translatedOutput?.[0] || translatedOutput)?.translation_text || '',
       translatedOutput
     });
   } catch (error) {

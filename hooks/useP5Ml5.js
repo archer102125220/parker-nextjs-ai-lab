@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react';
 import useIsomorphicLayoutEffect from '@/hooks/useIsomorphicLayoutEffect';
 import useMl5 from '@/hooks/useMl5';
 
-export default function useP5Ml5({ elementRef, getElementRef, getClassifier, onBeforeInit, onAfterInit, setup } = {}) {
+export function useP5Ml5({ elementRef, getElementRef, getClassifier, onBeforeInit, onAfterInit, setup } = {}) {
   const { ml5, ml5Loading } = useMl5({ getClassifier });
 
   const [p5Loading, setP5Loading] = useState(true);
@@ -33,36 +33,6 @@ export default function useP5Ml5({ elementRef, getElementRef, getClassifier, onB
     // };
     setP5JsSketch(sketch);
   }
-
-  useIsomorphicLayoutEffect(() => {
-    async function p5Init() {
-      if (ml5 === null) return;
-
-      if (typeof onBeforeInit === 'function') {
-        await onBeforeInit(ml5, P5);
-      }
-
-      const _p5Model = await import('p5');
-      const P5 = _p5Model.default;
-
-      const ml5Classifier = await getClassifier(ml5, P5);
-      // P5.prototype.isPreloadSupported = function () {
-      //   return true;
-      // };
-      const element = typeof getElementRef === 'function' ? getElementRef() : elementRef;
-      const _P5 = new P5((...arg) => p5Config(ml5Classifier, ...arg), element);
-      setP5Js(_P5);
-
-      if (typeof onAfterInit === 'function') {
-        await onAfterInit(ml5, P5, ml5Classifier, _P5);
-      }
-    }
-
-    if (typeof window !== 'undefined') {
-      p5Init();
-    }
-
-  }, [ml5]);
 
   useIsomorphicLayoutEffect(() => {
     async function p5Init() {
@@ -120,3 +90,6 @@ export default function useP5Ml5({ elementRef, getElementRef, getClassifier, onB
     p5JsSketch,
   };
 }
+
+
+export default useP5Ml5;

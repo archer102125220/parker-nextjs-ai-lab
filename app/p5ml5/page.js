@@ -12,14 +12,10 @@ import styles from '@/app/p5ml5/p5ml5.module.css';
 export default function P5Ml5() {
   const divCanvasRef = useRef(null);
   const [resultList, setResultList] = useState(null);
+  const [translatePayload, setTranslatePayload] = useState(null);
   // const [translatedLabel, setTranslatedLabel] = useState('');
-  // const translate = useTranslatorHf('Xenova/opus-mt-en-zh', process.env.HUGGINGFACE_TOKEN);
-  const { translatedLabel } = useTranslatorApi(resultList?.[0]?.label,
-    {
-      srcLang: 'eng_Latn',
-      tgtLang: 'zho_Hant'
-    }
-  );
+  // const translate = useTranslatorHf('Xenova/opus-mt-en-zh', process.env.NEXT_PUBLIC_HUGGINGFACE_TOKEN);
+  const { translatedLabel } = useTranslatorApi(translatePayload);
   const { p5Loading } = useP5Ml5({ getElementRef: () => divCanvasRef.current, getClassifier, setup });
 
   async function getClassifier(ml5) {
@@ -39,6 +35,9 @@ export default function P5Ml5() {
           console.log({ results });
           // P5.createDiv(`Label: ${results[0].label}`);
           setResultList(results);
+          setTranslatePayload({
+            msg: results[0].label,
+          });
         } else {
           console.error('ml5 error');
         }
@@ -73,6 +72,7 @@ export default function P5Ml5() {
           <p>{translatedLabel}</p>
         </div>
       )}
+      {p5Loading === false ? <p>{JSON.stringify(resultList)}</p> : ''}
     </main>
   );
 }

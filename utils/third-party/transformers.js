@@ -75,7 +75,7 @@ export class TranslatorConstructor {
     console.log('init inferenceClient...');
 
     this.#modelName = model;
-    this.#token = token || process.env.HUGGINGFACE_TOKEN;
+    this.#token = token || process.env.NEXT_PUBLIC_HUGGINGFACE_TOKEN;
     this.#inferenceClient = new this.InferenceClient(this.#token);
 
     console.log('InferenceClient inited.');

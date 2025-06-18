@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { axiosInit, request as axiosRequest } from '@/utils/request';
 
@@ -12,9 +14,10 @@ export function useRequestInit(apiBase, errorAdapter, defaultExtendOption) {
       setError(null);
 
       try {
-        const baseURL = apiBase || process.env.API_BASE;
-        if (!baseURL) {
-          console.warn('API_BASE 環境變數未設定');
+        const baseURL = apiBase || process.env.NEXT_PUBLIC_API_BASE;
+        console.log({ baseURL });
+        if (typeof baseURL !== 'string' || baseURL === '') {
+          console.warn('NEXT_PUBLIC_API_BASE 環境變數未設定');
         }
         axiosInit(baseURL, errorAdapter, defaultExtendOption);
         isInitialized.current = true;

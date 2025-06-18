@@ -1,49 +1,42 @@
-import { useState, useEffect } from 'react';
-// import { request } from '@/utils/request';
+import { useGetRequest } from '@/hooks/useRequest/useGetRequest';
+import { useCallback, useState, useEffect } from 'react';
 
-import { useRequestInit } from '@/hooks/useRequest/useRequestInit';
+export function useTranslatorApi(option = { msg: '' }) {
+  // const [translatedLabel, setTranslatedLabel] = useState('');
 
-export function useTranslatorApi(msg = '', option = {}) {
-  const [translatedLabel, setTranslatedLabel] = useState('');
+  // const [isLoading, setIsLoading] = useState(false);
+  const [payload, setIsPayload] = useState(null);
+  // const [error, setError] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  // const { request } = useRequestInit();
 
-  const { request } = useRequestInit();
+  const handlerCheckPayload = useCallback((_payload) => {
+    console.log({ _payload });
+    return typeof _payload?.msg === 'string' && _payload?.msg !== '';
+  }, []);
+
+  const {
+    response: translatedLabel,
+    isLoading,
+    error
+  } = useGetRequest(
+    '/api/translator',
+    payload,
+    handlerCheckPayload
+  );
 
   useEffect(() => {
-    async function translate() {
-      if (msg === '') return;
+    const msg = option?.msg || '';
+    const src_lang = option?.srcLang || 'eng_Latn';
+    const tgt_lang = option?.tgtLang || 'zho_Hant';
 
-      const {
-        srcLang = 'eng_Latn',
-        tgtLang = 'zho_Hant'
-      } = option;
-
-      setIsLoading(true);
-
-      try {
-        setError(null);
-
-        const response = await request.get('/api/translator', {
-          msg,
-          src_lang: srcLang,
-          tgt_lang: tgtLang
-        }, { useCache: true });
-
-        setTranslatedLabel(response.label);
-      } catch (_error) {
-        setError(_error);
-      }
-
-      setIsLoading(false);
+    if (typeof msg === 'string' && msg !== '') {
+      setIsPayload({ msg, src_lang, tgt_lang });
     }
-
-    translate();
-  }, [request, msg, option]);
+  }, [option]);
 
   return {
-    translatedLabel,
+    translatedLabel: translatedLabel || '',
     isLoading,
     error
   };

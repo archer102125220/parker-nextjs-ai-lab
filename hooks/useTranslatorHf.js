@@ -9,8 +9,8 @@ export function useTranslatorHf(model = 'Xenova/opus-mt-en-zh', token = '') {
       setLoading(true);
       if (typeof token === 'string' && token !== '') {
         // 'Helsinki-NLP/opus-mt-en-zh'
-        // await Translator.initInferenceClient(process.env.HUGGINGFACE_TOKEN, model);
-        await Translator.initInferenceClient(token || process.env.HUGGINGFACE_TOKEN, model);
+        // await Translator.initInferenceClient(process.env.NEXT_PUBLIC_HUGGINGFACE_TOKEN, model);
+        await Translator.initInferenceClient(token || process.env.NEXT_PUBLIC_HUGGINGFACE_TOKEN, model);
       } else {
         // 'Xenova/opus-mt-en-zh'
         await Translator.loadTransformers(model);
