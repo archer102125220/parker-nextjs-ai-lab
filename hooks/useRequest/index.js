@@ -8,7 +8,7 @@ import { CancelRequest } from '@/utils/request/';
 export function useRequest(method = 'get', path = '', payload = {}, extendOption = {}, requestOption = {}) {
   const { apiBase, errorAdapter, defaultExtendOption } = requestOption;
 
-  const axiosRequest = useRequestInit(apiBase || process.env.API_BASE, errorAdapter, defaultExtendOption);
+  const { request: axiosRequest } = useRequestInit(apiBase || process.env.API_BASE, errorAdapter, defaultExtendOption);
 
   const [response, setResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);

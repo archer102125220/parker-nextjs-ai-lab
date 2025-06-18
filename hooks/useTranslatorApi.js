@@ -9,7 +9,7 @@ export function useTranslatorApi(msg = '', option = {}) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const request = useRequestInit();
+  const { request } = useRequestInit();
 
   useEffect(() => {
     async function translate() {

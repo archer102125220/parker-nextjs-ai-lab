@@ -1,12 +1,43 @@
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { axiosInit, request as axiosRequest } from '@/utils/request';
 
 export function useRequestInit(apiBase, errorAdapter, defaultExtendOption) {
+  const isInitialized = useRef(typeof axiosRequest.ax === 'object' && axiosRequest.ax !== null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  if (typeof axiosRequest.ax === 'object') {
-    axiosInit(apiBase || process.env.API_BASE, errorAdapter, defaultExtendOption);
-  }
+  const initialize = useCallback(() => {
+    if (!isInitialized.current && (typeof axiosRequest.ax !== 'object' || axiosRequest.ax === null)) {
+      setIsLoading(true);
+      setError(null);
 
-  return axiosRequest;
+      try {
+        const baseURL = apiBase || process.env.API_BASE;
+        if (!baseURL) {
+          console.warn('API_BASE 環境變數未設定');
+        }
+        axiosInit(baseURL, errorAdapter, defaultExtendOption);
+        isInitialized.current = true;
+      } catch (err) {
+        setError(err);
+        console.error('初始化 axios 失敗:', err);
+      }
+
+      setIsLoading(false);
+    }
+  }, [apiBase, errorAdapter, defaultExtendOption]);
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  return {
+    request: axiosRequest,
+    isInitialized: isInitialized.current,
+    isLoading,
+    error,
+    reinitialize: initialize
+  };
 }
 
 export default useRequestInit;
