@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import _cloneDeep from 'lodash/cloneDeep';
 
-import { useRequestInit } from '@/hooks/useRequestInit';
-import { CancelRequest } from '@/utils/request';
+import { useRequestInit } from '@/hooks/useRequest/useRequestInit';
 
 // import { axiosInit, request as axiosRequest } from '@/utils/request';
 
@@ -16,7 +15,11 @@ export function useRequest(
 ) {
   const { apiBase, errorAdapter, defaultExtendOption } = requestOption;
 
-  const { request: axiosRequest } = useRequestInit(apiBase || process.env.NEXT_PUBLIC_API_BASE, errorAdapter, defaultExtendOption);
+  const { request: axiosRequest } = useRequestInit(
+    apiBase || process.env.NEXT_PUBLIC_API_BASE,
+    errorAdapter,
+    defaultExtendOption
+  );
 
   const [response, setResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,8 +28,8 @@ export function useRequest(
 
   const cancelRequest = useCallback(() => {
     const _method = typeof method === 'string' ? method : '';
-    return CancelRequest.handlerCancel(_method.toLocaleLowerCase(), path, payload);
-  }, [method, path, payload]);
+    return axiosRequest.cancel(_method.toLocaleLowerCase(), path, payload);
+  }, [axiosRequest, method, path, payload]);
 
   const handleRequest = useCallback(async () => {
     if (typeof path !== 'string' || path === '' ||
@@ -47,26 +50,29 @@ export function useRequest(
 
       delete _extendOption.retry;
 
-      // if (/POST|PUT|DELETE/i.test(method) === false) {
-      //   _extendOption.useCache = true;
-      //   _extendOption.useServiceWorkerCache = true;
-      // }
-
-      if (/GETE/i.test(method) === true) {
-        _extendOption.useCache = true;
-        _extendOption.useServiceWorkerCache = true;
+      if (/GET/i.test(method) === true) {
+        _extendOption.useCache =
+          typeof _extendOption.useCache === 'boolean' ?
+            _extendOption.useCache :
+            true;
+        _extendOption.useServiceWorkerCache =
+          typeof _extendOption.useServiceWorkerCache === 'boolean' ?
+            _extendOption.useServiceWorkerCache :
+            true;
+      } else if (/POST|PUT|DELETE/i.test(method) === true) {
+        _extendOption.useServiceWorkerCache = false;
       }
 
-      const response = await axiosRequest(
+      const newResponse = await axiosRequest(
         method,
         path,
         payload,
         _extendOption
       );
 
-      setResponse(response);
+      setResponse(newResponse);
 
-      return response;
+      return newResponse;
     } catch (_error) {
       setError(_error);
     } finally {
@@ -83,14 +89,15 @@ export function useRequest(
 
   useEffect(() => {
     handleRequest();
-  }, [handleRequest]);
+  }, [payload, handleRequest]);
   useEffect(() => {
+    if (error === null) return;
     const { retry } = extendOption;
     const _retry = typeof retry === 'number' ? retry : 3;
     if (retryCount <= _retry) {
       handleRetry();
     }
-  }, [handleRetry, extendOption, retryCount]);
+  }, [error, handleRetry, extendOption, retryCount]);
 
 
   return {
@@ -101,5 +108,25 @@ export function useRequest(
     refetch: handleRetry
   };
 }
+
+export const useGetRequest = (...arg) => {
+  return useRequest('get', ...arg);
+};
+
+export const usePostRequest = (...arg) => {
+  return useRequest('post', ...arg);
+};
+
+export const usePatchRequest = (...arg) => {
+  return useRequest('patch', ...arg);
+};
+
+export const usePutRequest = (...arg) => {
+  return useRequest('put', ...arg);
+};
+
+export const useDeleteRequest = (...arg) => {
+  return useRequest('delete', ...arg);
+};
 
 export default useRequest;

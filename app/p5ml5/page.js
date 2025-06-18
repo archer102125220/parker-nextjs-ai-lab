@@ -72,6 +72,7 @@ export default function P5Ml5() {
           <p>{translatedLabel}</p>
         </div>
       )}
+
       {p5Loading === false ? <p>{JSON.stringify(resultList)}</p> : ''}
     </main>
   );

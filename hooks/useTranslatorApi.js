@@ -1,4 +1,4 @@
-import { useGetRequest } from '@/hooks/useRequest/useGetRequest';
+import { useGetRequest } from '@/hooks/useRequest';
 import { useCallback, useState, useEffect } from 'react';
 
 export function useTranslatorApi(option = { msg: '' }) {
@@ -36,7 +36,7 @@ export function useTranslatorApi(option = { msg: '' }) {
   }, [option]);
 
   return {
-    translatedLabel: translatedLabel || '',
+    translatedLabel: translatedLabel?.label || '',
     isLoading,
     error
   };
