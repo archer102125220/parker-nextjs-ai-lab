@@ -1,32 +1,52 @@
-import { useState, useCallback, useSyncExternalStore } from 'react';
-import { Translator } from '@/utils/third-party/transformers';
+import {
+  // useState,
+  useRef,
+  useCallback,
+  useSyncExternalStore
+} from 'react';
+import {
+  // Translator,
+  TranslatorConstructor
+} from '@/utils/third-party/transformers';
 
-export function useTranslatorHf(model = 'Xenova/opus-mt-en-zh', token = '') {
-  const [loading, setLoading] = useState(false);
+export function useTranslatorHf(model = '', token = '') {
+  // const [loading, setLoading] = useState(false);
+  const translatorRef = useRef(null);
 
-  const subscribe = useCallback(() => {
-    async function initTranslator() {
-      setLoading(true);
-      if (typeof token === 'string' && token !== '') {
-        // 'Helsinki-NLP/opus-mt-en-zh'
-        // await Translator.initInferenceClient(process.env.NEXT_PUBLIC_HUGGINGFACE_TOKEN, model);
-        await Translator.initInferenceClient(token || process.env.NEXT_PUBLIC_HUGGINGFACE_TOKEN, model);
-      } else {
-        // 'Xenova/opus-mt-en-zh'
-        await Translator.loadTransformers(model);
-      }
-      setLoading(false);
+  const initTranslator = useCallback(async () => {
+    // setLoading(true);
+    const translator = new TranslatorConstructor();
+    if (typeof token === 'string' && token !== '') {
+      const _model = model || 'Helsinki-NLP/opus-mt-en-zh';
+      // await Translator.initInferenceClient(token || process.env.NEXT_PUBLIC_HUGGINGFACE_TOKEN, _model);
+      await translator.initInferenceClient(token || process.env.NEXT_PUBLIC_HUGGINGFACE_TOKEN, _model);
+    } else {
+      const _model = model || 'Xenova/opus-mt-en-zh';
+      // await Translator.loadTransformers(_model);
+      await translator.loadTransformers(_model);
     }
-    initTranslator();
-    return Translator.handleDispose();
+    translatorRef.current = translator;
+    // setLoading(false);
   }, [model, token]);
 
+  const subscribe = useCallback(() => {
+    initTranslator();
+    // return () => Translator.handleDispose();
+    return () => translatorRef.current?.handleDispose();
+  }, [initTranslator]);
+
+  // const getSnapshot = useCallback(() => {
+  //   if (typeof model !== 'string' || model === '' || loading === true) {
+  //     return null;
+  //   }
+  //   return Translator.handleTranslate;
+  // }, [model, loading]);
   const getSnapshot = useCallback(() => {
-    if (typeof model !== 'string' || model === '' || loading === true) {
+    if (typeof translatorRef.current?.handleTranslate !== 'function') {
       return null;
     }
-    return Translator.handleTranslate;
-  }, [model, loading]);
+    return translatorRef.current.handleTranslate;
+  }, []);
 
   // const getServerSnapshot = () => null;
 

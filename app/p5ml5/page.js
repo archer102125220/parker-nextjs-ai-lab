@@ -7,7 +7,7 @@ import useP5Ml5 from '@/hooks/useP5Ml5';
 import { useTranslatorApi } from '@/hooks/useTranslatorApi';
 // import { useTranslatorHf } from '@/hooks/useTranslatorHf';
 
-import styles from '@/app/p5ml5/p5ml5.module.css';
+import styles from '@/app/p5ml5/p5ml5.module.scss';
 
 export default function P5Ml5() {
   const divCanvasRef = useRef(null);
@@ -59,7 +59,7 @@ export default function P5Ml5() {
   // }, [resultList, translate]);
 
   return (
-    <main className={styles.main}>
+    <main className={styles.p5ml5_page}>
       {p5Loading === true && (
         <Skeleton variant="rounded" width={500} height={250} />
       )}

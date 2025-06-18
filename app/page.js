@@ -4,12 +4,15 @@ import styles from '@/app/page.module.scss';
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <Button variant="contained">
-        <Link href="/p5ml5">p5 + ml5</Link>
+    <main className={styles.index_page}>
+      <Button variant="contained" component={Link} href="/p5ml5">
+        p5 + ml5
       </Button>
-      <Button variant="contained">
-        <Link href="/tensorflowjs">TensorflowJS</Link>
+      <Button variant="contained" component={Link} href="/tensorflowjs">
+        TensorflowJS
+      </Button>
+      <Button variant="contained" component={Link} href="/huggingface_translate">
+        huggingface翻譯
       </Button>
     </main>
   );

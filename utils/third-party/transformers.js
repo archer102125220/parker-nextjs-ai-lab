@@ -22,9 +22,9 @@ const DEVICE_TYPES = Object.freeze({
 */
 
 export class TranslatorConstructor {
-  constructor(pipeline, InferenceClient) {
-    this.#pipeline = pipeline;
-    this.#InferenceClient = InferenceClient;
+  constructor(_pipeline, _InferenceClient) {
+    this.#pipeline = _pipeline || pipeline;
+    this.#InferenceClient = _InferenceClient || InferenceClient;
   }
   #pipeline = null;
   #InferenceClient = null;
@@ -71,10 +71,10 @@ export class TranslatorConstructor {
    * @param {string} model - 模型名稱，預設與 loadTransformers 不同，預設為 Helsinki-NLP/opus-mt-en-zh，在 handleTranslate 時使用
    * @returns {InferenceClient} 推理模型實例
    */
-  initInferenceClient = async (token, model = 'Helsinki-NLP/opus-mt-en-zh') => {
+  initInferenceClient = async (token, model = '') => {
     console.log('init inferenceClient...');
 
-    this.#modelName = model;
+    this.#modelName = model || 'Helsinki-NLP/opus-mt-en-zh';
     this.#token = token || process.env.NEXT_PUBLIC_HUGGINGFACE_TOKEN;
     this.#inferenceClient = new this.InferenceClient(this.#token);
 

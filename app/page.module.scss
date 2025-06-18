@@ -1,8 +1,11 @@
-.main {
+.index_page {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 6rem;
-  min-height: 100vh;
   justify-content: space-around;
+  gap: 8px;
+
+  min-height: 100vh;
+
+  padding: 6rem;
 }
