@@ -7,22 +7,26 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 import { useTranslatorHf } from '@/hooks/useTranslatorHf';
+import { useTranslatorApi } from '@/hooks/useTranslatorApi';
 
 import styles from '@/app/huggingface_translate/huggingface_translate.module.scss';
 
 export default function Tensorflow() {
   const [xenovaTranslating, setXenovaTranslating] = useState(false);
-  const [xenovaInput, setXenovaInput] = useState(false);
-  const [helsinkiNLPTranslating, setHelsinkiNLPTranslating] = useState(false);
-  const [helsinkiNLPInput, setHelsinkiNLPInput] = useState(false);
+  const [xenovaInput, setXenovaInput] = useState('');
   const [xenovaTranslatedLabel, setXenovaTranslatedLabel] = useState('');
+  const [helsinkiNLPTranslating, setHelsinkiNLPTranslating] = useState(false);
+  const [helsinkiNLPInput, setHelsinkiNLPInput] = useState('');
   const [helsinkiNLPTranslatedLabel, setHelsinkiNLPTranslatedLabel] = useState('');
+  const [apiInput, setApiInput] = useState('');
+  const [translatePayload, setTranslatePayload] = useState('');
+  const { translatedLabel: apiTranslatedLabel, isLoading: apiTranslating } = useTranslatorApi(translatePayload);
+  // For some reason a component ref is being added into the payload?
 
   const translateXenova = useTranslatorHf('Xenova/opus-mt-en-zh');
   const translateHelsinkiNLP = useTranslatorHf('Helsinki-NLP/opus-mt-en-zh', process.env.NEXT_PUBLIC_HUGGINGFACE_TOKEN);
 
   const handleTranslateXenova = useCallback(async () => {
-    console.log('123');
     setXenovaTranslating(true);
 
     try {
@@ -56,6 +60,10 @@ export default function Tensorflow() {
     }
 
   }, [helsinkiNLPInput, translateHelsinkiNLP]);
+
+  const handleTranslateApi = useCallback(async () => {
+    setTranslatePayload({ msg: apiInput });
+  }, [apiInput]);
 
   return (
     <main className={styles.huggingface_translate_page}>
@@ -125,6 +133,41 @@ export default function Tensorflow() {
             (<div>
               <p>翻譯為: </p>
               <p>{helsinkiNLPTranslatedLabel}</p>
+            </div>)
+            : ''
+        }
+      </Box>
+
+      <Box component="form"
+        sx={{ marginBottom: 4 }}
+        onSubmit={(e) => { e.preventDefault(); handleTranslateApi(); }}
+      >
+        <h2>透過呼叫伺服器上的 api 使用 Xenova/opus-mt-en-zh 翻譯模型</h2>
+
+        <TextField
+          label="翻譯文字"
+          variant="filled"
+          multiline={true}
+          fullWidth={true}
+          sx={{ marginBottom: 4 }}
+          onChange={(event) => setApiInput(event.target.value)}
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ marginBottom: 4 }}
+        >
+          翻譯
+        </Button>
+
+        {apiTranslating === true ? (
+          <Skeleton variant="rounded" width="100%" height={106} />
+        ) : ''}
+        {
+          typeof apiTranslatedLabel === 'string' && apiTranslatedLabel !== '' ?
+            (<div>
+              <p>翻譯為: </p>
+              <p>{apiTranslatedLabel}</p>
             </div>)
             : ''
         }

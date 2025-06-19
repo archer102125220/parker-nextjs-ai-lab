@@ -11,7 +11,6 @@ export function useTranslatorApi(option = { msg: '' }) {
   // const { request } = useRequestInit();
 
   const handlerCheckPayload = useCallback((_payload) => {
-    console.log({ _payload });
     return typeof _payload?.msg === 'string' && _payload?.msg !== '';
   }, []);
 
