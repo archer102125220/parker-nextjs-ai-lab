@@ -20,7 +20,7 @@ export function useTranslatorApi(option = { msg: '' }) {
     isLoading,
     error
   } = useGetRequest(
-    '/api/translator',
+    '/translator',
     payload,
     handlerCheckPayload
   );
