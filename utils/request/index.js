@@ -147,7 +147,7 @@ export function request(
   url,
   _params = {},
   _extendOption = {},
-  errorAdapter = true
+  hasErrorAdapter = true
 ) {
   const method = _method.toUpperCase();
   const defaultExtendOption = request.defaultExtendOption;
@@ -227,7 +227,7 @@ export function request(
       return data;
     })
     .catch(async (error) => {
-      if (errorAdapter === true && typeof request.errorAdapter === 'function') {
+      if (hasErrorAdapter === true && typeof request.errorAdapter === 'function') {
         try {
           const headers = extendOption?.headers;
           const response = await request.errorAdapter(error, (newHeaders) =>

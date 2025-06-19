@@ -10,6 +10,7 @@ export function useRequest(
   path = '',
   payload = {},
   checkPayload,
+  isErrorAdapter,
   extendOption = { retry: 3 },
   requestOption = {}
 ) {
@@ -67,7 +68,8 @@ export function useRequest(
         method,
         path,
         payload,
-        _extendOption
+        _extendOption,
+        isErrorAdapter
       );
 
       setResponse(newResponse);
@@ -79,7 +81,7 @@ export function useRequest(
       setIsLoading(false);
     }
 
-  }, [axiosRequest, method, path, payload, checkPayload, extendOption]);
+  }, [axiosRequest, method, path, payload, checkPayload, isErrorAdapter, extendOption]);
 
   const handleRetry = useCallback(async () => {
     if (error !== null && isLoading === false) return response;
