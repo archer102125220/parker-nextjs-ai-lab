@@ -7581,6 +7581,7 @@ __metadata:
     onnxruntime-web: "npm:^1.22.0"
     p5: "npm:^2.0.2"
     prettier: "npm:^3.2.4"
+    prop-types: "npm:^15.8.1"
     qs: "npm:^6.14.0"
     react: "npm:^18"
     react-dom: "npm:^18"

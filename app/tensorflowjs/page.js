@@ -8,6 +8,8 @@ import useIsomorphicLayoutEffect from '@/hooks/useIsomorphicLayoutEffect';
 import { useTensorflowMobilenet } from '@/hooks/useTensorflowMobilenet';
 import { useTranslatorHf } from '@/hooks/useTranslatorHf';
 
+import { ImageUpload } from '@/components/ImageUpload';
+
 import styles from '@/app/tensorflowjs/tensorflow.module.scss';
 
 export default function Tensorflowjs() {
@@ -91,6 +93,10 @@ export default function Tensorflowjs() {
         ref={imgRef}
         src="/images/bird.png"
         alt="bird"
+        width={600}
+        height={500}
+      />
+      <ImageUpload
         width={600}
         height={500}
       />

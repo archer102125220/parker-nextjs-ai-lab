@@ -20,7 +20,10 @@ export default function Tensorflow() {
   const [helsinkiNLPTranslatedLabel, setHelsinkiNLPTranslatedLabel] = useState('');
   const [apiInput, setApiInput] = useState('');
   const [translatePayload, setTranslatePayload] = useState('');
-  const { translatedLabel: apiTranslatedLabel, isLoading: apiTranslating } = useTranslatorApi(translatePayload);
+  const {
+    translatedLabel: apiTranslatedLabel,
+    isLoading: apiTranslating
+  } = useTranslatorApi(translatePayload);
   // For some reason a component ref is being added into the payload?
 
   const translateXenova = useTranslatorHf('Xenova/opus-mt-en-zh');

@@ -1,5 +1,7 @@
 'use client';
 
+import PropTypes from 'prop-types';
+
 import { useRequestInit } from '@/hooks/useRequest/useRequestInit';
 
 export function AxiosInit({ children }) {
@@ -7,3 +9,11 @@ export function AxiosInit({ children }) {
 
   return children;
 }
+
+AxiosInit.propTypes = {
+  children: PropTypes.any
+};
+
+AxiosInit.defaultProps = {
+  children: ''
+};
