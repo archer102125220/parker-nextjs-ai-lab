@@ -12,7 +12,7 @@ export default function Tensorflowjs() {
       <h2>Tensorflow.js 測試紀錄</h2>
       <Box>
         <Button variant="contained" component={Link} href="/tensorflowjs/mobilenet">
-          mobilenet 模型測試
+          MobileNet 模型測試
         </Button>
       </Box>
     </main>

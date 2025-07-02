@@ -13,7 +13,7 @@ import { ImageUpload } from '@/components/ImageUpload';
 
 import styles from '@/app/tensorflowjs/mobilenet/mobilenet.module.scss';
 
-export default function TensorflowjsMobilenet() {
+export default function TensorflowjsMobileNet() {
   const { loading, tensorflowModel } = useTensorflowMobilenet();
   const translateXenova = useTranslatorHf('Xenova/opus-mt-en-zh');
   const translateHelsinkiNLP = useTranslatorHf(
@@ -102,7 +102,7 @@ export default function TensorflowjsMobilenet() {
 
   return (
     <main className={styles.mobilenet_page}>
-      <h2>Tensorflow.js 使用 mobilenet 模型</h2>
+      <h2>Tensorflow.js 使用 MobileNet 模型</h2>
       <ImageUpload
         ref={imgUploadRef}
         imgRef={imgRef}
