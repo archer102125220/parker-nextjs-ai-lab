@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Button from '@mui/material/Button';
 
@@ -8,21 +8,51 @@ import styles from '@/components/ImageUpload/styles.module.scss';
 export function ImageUpload(props) {
   const {
     previewBgColor = '#fff',
-    width,
-    height,
+    width = 500,
+    height = 500,
     disable,
-    src,
-    fileCheck,
-    fileTypeError,
-    change,
+    src = '',
+    fileCheck = null,
+    fileTypeError = null,
+    change = null,
     btnLabel = '上傳圖片',
     label = '點擊或拖拉圖片到此區塊上傳',
     maskLabel = '拖拉圖片到此區塊上傳',
+    ref,
+    imgRef
   } = props;
-  const [cssVariable, setCssVariable] = useState({});
   const [value, setValue] = useState('');
   const [showMask, setShowMask] = useState(false);
   const [previewImg, setPreviewImg] = useState('');
+
+  const cssVariable = useMemo(() => {
+    const _cssVariable = { '--preview_bg_color': previewBgColor };
+
+    if (typeof width === 'number') {
+      _cssVariable['--image_upload_width'] = `${width}px`;
+    }
+    if (typeof height === 'number') {
+      _cssVariable['--image_upload_height'] = `${height}px`;
+    }
+
+    if (previewImg !== '') {
+      _cssVariable['--preview_opacity'] = 1;
+    } else {
+      _cssVariable['--preview_opacity'] = 0;
+    }
+
+    if (showMask === true) {
+      _cssVariable['--mask_opacity'] = 0.8;
+    } else {
+      _cssVariable['--mask_opacity'] = 0;
+    }
+
+    if (disable === true) {
+      _cssVariable['--image_upload_cursor'] = 'not-allowed';
+    }
+
+    return _cssVariable;
+  }, [previewBgColor, width, height, previewImg, showMask, disable]);
 
   const handlePreviewImg = useCallback((newPreviewImg) => {
     const reader = new FileReader();
@@ -138,33 +168,6 @@ export function ImageUpload(props) {
     setShowMask(false);
   }, [disable, fileCheck, change, handlePreviewImg]);
 
-  useEffect(() => {
-    const _cssVariable = { '--preview_bg_color': previewBgColor };
-
-    if (typeof width === 'number') {
-      _cssVariable['--image_upload_width'] = `${width}px`;
-    }
-    if (typeof height === 'number') {
-      _cssVariable['--image_upload_height'] = `${height}px`;
-    }
-
-    if (previewImg !== '') {
-      _cssVariable['--preview_opacity'] = 1;
-    } else {
-      _cssVariable['--preview_opacity'] = 0;
-    }
-
-    if (showMask === true) {
-      _cssVariable['--mask_opacity'] = 0.8;
-    } else {
-      _cssVariable['--mask_opacity'] = 0;
-    }
-
-    if (disable === true) {
-      _cssVariable['--image_upload_cursor'] = 'not-allowed';
-    }
-    setCssVariable(_cssVariable);
-  }, [previewBgColor, width, height, previewImg, showMask, disable]);
 
   useEffect(() => {
     const newValue = src || value;
@@ -175,8 +178,13 @@ export function ImageUpload(props) {
     }
   }, [src, value, handleFileReader]);
 
+  useEffect(() => {
+    console.log({ ref, imgRef });
+  }, [ref, imgRef]);
+
 
   return <Button
+    ref={ref}
     component='div'
     className={styles.image_upload}
     style={cssVariable}
@@ -200,7 +208,7 @@ export function ImageUpload(props) {
     </label>
 
     <div className={styles['image_upload-preview']}>
-      {previewImg && <Image
+      {previewImg && <Image ref={imgRef}
         className={styles['image_upload-preview-img']}
         src={previewImg}
         alt='preview-img'
@@ -227,19 +235,23 @@ ImageUpload.propTypes = {
   label: PropTypes.string,
   maskLabel: PropTypes.string,
   src: [PropTypes.object, PropTypes.string],
+  change: PropTypes.func,
   previewBgColor: PropTypes.string,
   maxSize: PropTypes.number, //  2 * 1024 * 1024
   fileCheck: PropTypes.func,
+  fileTypeError: PropTypes.func,
   disable: PropTypes.bool,
   width: PropTypes.number,
   height: PropTypes.number
 };
 
+// 已被棄用
 ImageUpload.defaultProps = {
   btnLabel: '上傳圖片',
   label: '點擊或拖拉圖片到此區塊上傳',
   maskLabel: '拖拉圖片到此區塊上傳',
   src: '',
+  change: null,
   previewBgColor: '#fff',
   maxSize: null, //  2 * 1024 * 1024
   fileCheck: null,

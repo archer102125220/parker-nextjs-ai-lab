@@ -1,10 +1,10 @@
-.tensorflowjs_page {
+.mobilenet_page {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
 
   min-height: 100vh;
-  padding: 6rem;
 
-  gap: 3rem;
+  padding: 6rem;
 }

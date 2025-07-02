@@ -1,11 +1,17 @@
 .index_page {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  gap: 8px;
-
   min-height: 100vh;
 
-  padding: 6rem;
+  padding: 3rem;
+
+  &-title {
+    margin-bottom: 3rem;
+  }
+
+  &-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    gap: 3rem;
+  }
 }
