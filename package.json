@@ -32,6 +32,8 @@
     "gpu.js": "^2.16.0",
     "lodash": "^4.17.21",
     "lru-cache": "^11.1.0",
+    "ml-kmeans": "^6.0.0",
+    "ml-knn": "^3.0.0",
     "ml5": "^1.2.1",
     "next": "^15.3.4",
     "onnxruntime-common": "^1.22.0",
