@@ -63,6 +63,19 @@ export class cancelRequest {
 // eslint-disable-next-line new-cap
 export const CancelRequest = new cancelRequest();
 
+export function getCache(requestKey) {
+  return cacheCfg.get(requestKey);
+}
+export function setCache(requestKey, response) {
+  return cacheCfg.set(requestKey, response);
+}
+export function deleteCache(requestKey) {
+  return cacheCfg.delete(requestKey);
+}
+export function removeCache() {
+  return cacheCfg.clear();
+}
+
 // eslint-disable-next-line import/no-mutable-exports
 export let ax = null;
 
@@ -73,9 +86,9 @@ export function axiosInit(baseURL, errorAdapter, defaultExtendOption) {
       {
         enabledByDefault: false,
         cacheFlag: 'useCache',
-        getCache: (requestKey) => cacheCfg.get(requestKey),
-        setCache: (requestKey, response) => cacheCfg.set(requestKey, response),
-        deleteCache: (requestKey) => cacheCfg.delete(requestKey)
+        getCache,
+        setCache,
+        deleteCache
       },
       function defaultAdapter(config) {
         delete config.adapter;
