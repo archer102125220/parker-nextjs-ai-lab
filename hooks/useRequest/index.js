@@ -5,6 +5,30 @@ import { useRequestInit } from '@/hooks/useRequest/useRequestInit';
 
 // import { axiosInit, request as axiosRequest } from '@/utils/request';
 
+/**
+ * 使用axios呼叫api的hook
+ * @param {string} method - 請求HTTP method
+ * @param {string} path - 請求url
+ * @param {object} payload - 請求參數，會被轉換成query string或body
+ * @param {function} checkPayload - 檢查請求參數的函式，如果回傳false，則不會發出請求
+ * @param {boolean} hasErrorAdapter - 是否使用錯誤處理函式
+ * @param {object} extendOption - 請求配置選項
+ * @param {object} extendOption.retry - 重試次數
+ * @param {object} extendOption.useCache - 是否使用快取，預設為true
+ * @param {object} extendOption.useServiceWorkerCache - 是否使用service worker快取，預設為true
+ * @param {object} extendOption.cacheKey - 快取key，預設為path
+ * @param {object} extendOption.cacheTime - 快取時間，預設為1000 * 60 * 10
+ * @param {object} requestOption - 請求選項，包含apiBase、errorAdapter、defaultExtendOption
+ * @param {string} requestOption.apiBase - axios的baseURL，預設為process.env.NEXT_PUBLIC_API_BASE
+ * @param {function} requestOption.errorAdapter - 錯誤處理函式，預設為null
+ * @param {object} requestOption.defaultExtendOption - 預設的extendOption，預設為{ retry: 3 }
+ * @returns {Object} - 包含以下屬性的物件：
+ * - cancelRequest: 取消請求的函式
+ * - response: 請求的回應
+ * - isLoading: 是否正在等待api請求完成
+ * - error: 錯誤訊息
+ * - refetch: 重新請求的函式
+ */
 export function useRequest(
   method = 'get',
   path = '',
@@ -111,22 +135,97 @@ export function useRequest(
   };
 }
 
+/**
+ * 使用axios呼叫GET api的hook
+ * @param {string} path - 請求url
+ * @param {object} payload - 請求參數，會被轉換成query string
+ * @param {function} checkPayload - 檢查請求參數的函式，如果回傳false，則不會發出請求
+ * @param {boolean} hasErrorAdapter - 是否使用錯誤處理函式
+ * @param {object} extendOption - 請求配置選項
+ * @param {object} requestOption - 請求選項，包含apiBase、errorAdapter、defaultExtendOption
+ * @returns {Object} - 包含以下屬性的物件：
+ * - cancelRequest: 取消請求的函式
+ * - response: 請求的回應
+ * - isLoading: 是否正在等待api請求完成
+ * - error: 錯誤訊息
+ * - refetch: 重新請求的函式
+ */
 export const useGetRequest = (...arg) => {
   return useRequest('get', ...arg);
 };
 
+/**
+ * 使用axios呼叫POST api的hook
+ * @param {string} path - 請求url
+ * @param {object} payload - 請求參數，會被轉換成body
+ * @param {function} checkPayload - 檢查請求參數的函式，如果回傳false，則不會發出請求
+ * @param {boolean} hasErrorAdapter - 是否使用錯誤處理函式
+ * @param {object} extendOption - 請求配置選項
+ * @param {object} requestOption - 請求選項，包含apiBase、errorAdapter、defaultExtendOption
+ * @returns {Object} - 包含以下屬性的物件：
+ * - cancelRequest: 取消請求的函式
+ * - response: 請求的回應
+ * - isLoading: 是否正在等待api請求完成
+ * - error: 錯誤訊息
+ * - refetch: 重新請求的函式
+ */
 export const usePostRequest = (...arg) => {
   return useRequest('post', ...arg);
 };
 
+/**
+ * 使用axios呼叫PATCH api的hook
+ * @param {string} path - 請求url
+ * @param {object} payload - 請求參數，會被轉換成body
+ * @param {function} checkPayload - 檢查請求參數的函式，如果回傳false，則不會發出請求
+ * @param {boolean} hasErrorAdapter - 是否使用錯誤處理函式
+ * @param {object} extendOption - 請求配置選項
+ * @param {object} requestOption - 請求選項，包含apiBase、errorAdapter、defaultExtendOption
+ * @returns {Object} - 包含以下屬性的物件：
+ * - cancelRequest: 取消請求的函式
+ * - response: 請求的回應
+ * - isLoading: 是否正在等待api請求完成
+ * - error: 錯誤訊息
+ * - refetch: 重新請求的函式
+ */
 export const usePatchRequest = (...arg) => {
   return useRequest('patch', ...arg);
 };
 
+/**
+ * 使用axios呼叫PUT api的hook
+ * @param {string} path - 請求url
+ * @param {object} payload - 請求參數，會被轉換成body
+ * @param {function} checkPayload - 檢查請求參數的函式，如果回傳false，則不會發出請求
+ * @param {boolean} hasErrorAdapter - 是否使用錯誤處理函式
+ * @param {object} extendOption - 請求配置選項
+ * @param {object} requestOption - 請求選項，包含apiBase、errorAdapter、defaultExtendOption
+ * @returns {Object} - 包含以下屬性的物件：
+ * - cancelRequest: 取消請求的函式
+ * - response: 請求的回應
+ * - isLoading: 是否正在等待api請求完成
+ * - error: 錯誤訊息
+ * - refetch: 重新請求的函式
+ */
 export const usePutRequest = (...arg) => {
   return useRequest('put', ...arg);
 };
 
+/**
+ * 使用axios呼叫DELETE api的hook
+ * @param {string} path - 請求url
+ * @param {object} payload - 請求參數，會被轉換成query string
+ * @param {function} checkPayload - 檢查請求參數的函式，如果回傳false，則不會發出請求
+ * @param {boolean} hasErrorAdapter - 是否使用錯誤處理函式
+ * @param {object} extendOption - 請求配置選項
+ * @param {object} requestOption - 請求選項，包含apiBase、errorAdapter、defaultExtendOption
+ * @returns {Object} - 包含以下屬性的物件：
+ * - cancelRequest: 取消請求的函式
+ * - response: 請求的回應
+ * - isLoading: 是否正在等待api請求完成
+ * - error: 錯誤訊息
+ * - refetch: 重新請求的函式
+ */
 export const useDeleteRequest = (...arg) => {
   return useRequest('delete', ...arg);
 };
